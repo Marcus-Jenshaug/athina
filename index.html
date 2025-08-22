@@ -10,15 +10,19 @@
 
   <style>
     :root{
-      --paper:#F1E3CF;
-      --ink:#111111;
-      --muted:#3D3A36;
+      --paper:#F1E3CF;   /* krem bakgrunn */
+      --ink:#111111;     /* blekk/svart */
+      --muted:#3D3A36;   /* dempet gråbrun */
       --maxw:1120px;
       --radius:10px;
       --shadow:0 12px 28px rgba(0,0,0,.12);
       --gap:26px;
       --in-dur:.7s;
       --in-ease:cubic-bezier(.21,.98,.6,.99);
+      /* Stripefarger – beholder paletten du likte */
+      --stripe1:#2b2723;
+      --stripe2:#6a5f56;
+      --stripe3:#a08f80;
     }
 
     *{box-sizing:border-box}
@@ -36,16 +40,9 @@
 
     /* Bakgrunn med tekstur og animasjon */
     body::before, body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:0}
-    body::before{
-      background: radial-gradient(120% 120% at 75% 15%, rgba(0,0,0,.06), transparent 55%),
-                  radial-gradient(140% 120% at 10% 90%, rgba(0,0,0,.05), transparent 55%);
-      mix-blend-mode:multiply;opacity:.28;animation:vignetteDrift 18s ease-in-out infinite alternate;
-    }
+    body::before{background:radial-gradient(120% 120% at 75% 15%, rgba(0,0,0,.06), transparent 55%),radial-gradient(140% 120% at 10% 90%, rgba(0,0,0,.05), transparent 55%);mix-blend-mode:multiply;opacity:.28;animation:vignetteDrift 18s ease-in-out infinite alternate}
     @keyframes vignetteDrift{to{transform:translateY(-1.5%)}}
-    body::after{
-      background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="180" height="180"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="2" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23n)" opacity="0.25"/></svg>');
-      opacity:.12;mix-blend-mode:multiply;animation:grainSlide 6s linear infinite;
-    }
+    body::after{background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="180" height="180"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="2" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23n)" opacity="0.25"/></svg>');opacity:.12;mix-blend-mode:multiply;animation:grainSlide 6s linear infinite}
     @keyframes grainSlide{to{transform:translateX(-2%)}}
 
     .container{position:relative;z-index:1;max-width:var(--maxw);margin:0 auto;padding:48px 20px 24px}
@@ -54,28 +51,30 @@
     .brev h1{font-family:"Archivo Black",sans-serif;font-weight:400;letter-spacing:.01em;font-size:clamp(2rem,3.2vw,2.6rem);margin:0 0 12px}
     .brev p{font-family:"Newsreader",serif;font-style:italic;color:var(--muted);max-width:70ch;margin:0 auto;font-size:clamp(1.02rem,1.2vw,1.15rem)}
 
-    main{padding:16px 20px 72px}
+    main{padding:16px 20px 96px}
     .grid{display:grid;gap:var(--gap);grid-template-columns:repeat(1,minmax(0,1fr));max-width:var(--maxw);margin:0 auto}
-    @media (min-width:720px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-    @media (min-width:1040px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+    /* Alltid 3 på rekke fra tablet og oppover */
+    @media (min-width:720px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 
-    /* Reveal på kort for mer liv */
+    /* Reveal for mer liv */
     .reveal{opacity:0;transform:translateY(14px) scale(.995)}
     .reveal.is-visible{opacity:1;transform:translateY(0) scale(1);transition:transform var(--in-dur) var(--in-ease),opacity var(--in-dur) var(--in-ease)}
 
+    /* Kort */
     .plate{display:block;position:relative;border-radius:var(--radius);overflow:hidden;text-decoration:none;color:inherit;background:rgba(255,255,255,.55);border:1px solid rgba(0,0,0,.08);box-shadow:var(--shadow);transform:translateZ(0);transition:transform .25s ease, box-shadow .25s ease, border-color .25s ease;will-change:transform}
     .plate:hover{transform:translateY(-4px);box-shadow:0 16px 32px rgba(0,0,0,.16);border-color:rgba(0,0,0,.12)}
 
-    /* Sammenflytende toppstripe */
-    .stripe{position:absolute;inset:0 0 auto 0;height:6px;z-index:2;background:linear-gradient(90deg,#2b2723,#6a5f56,#a08f80,rgba(0,0,0,.1));background-size:200% 100%;animation:stripeSlide var(--stripe-speed,3.2s) linear infinite;animation-delay:var(--phase,0ms)}
+    /* Sammenflytende toppstripe – faseforskjøvet per kort */
+    .stripe{position:absolute;inset:0 0 auto 0;height:6px;z-index:2;background:linear-gradient(90deg,var(--stripe1),var(--stripe2),var(--stripe3),rgba(0,0,0,.1));background-size:200% 100%;animation:stripeSlide var(--stripe-speed,3.2s) linear infinite;animation-delay:var(--phase,0ms)}
     @keyframes stripeSlide{to{background-position:-200% 0}}
 
     .cover{width:100%;aspect-ratio:1/1;display:block;object-fit:cover;background:#e9dbc7;filter:contrast(.95) saturate(.95);transition:transform .6s cubic-bezier(.2,.7,.2,1);animation:coverDrift 7s ease-in-out infinite;animation-delay:var(--phase,0ms)}
     .plate:hover .cover{transform:scale(1.03) rotate(.2deg)}
     @keyframes coverDrift{0%,100%{transform:scale(1.01)}50%{transform:scale(1.025)}}
 
-    .meta{padding:14px 16px 16px;background:linear-gradient(180deg, rgba(241,227,207,.6), rgba(241,227,207,.4));border-top:1px solid rgba(0,0,0,.06)}
-    .tittel{margin:0 0 6px;font-family:"Archivo Black",sans-serif;font-weight:400;text-transform:uppercase;letter-spacing:.06em;font-size:1.18rem;line-height:1.15;position:relative;transition:letter-spacing .25s ease, transform .25s ease}
+    /* Strammere mellomrom mellom bilde og tittel */
+    .meta{padding:10px 14px 14px;background:linear-gradient(180deg, rgba(241,227,207,.6), rgba(241,227,207,.4));border-top:1px solid rgba(0,0,0,.06)}
+    .tittel{margin:0 0 6px;font-family:"Archivo Black",sans-serif;font-weight:400;text-transform:uppercase;letter-spacing:.06em;font-size:1.18rem;line-height:1.12;position:relative;transition:letter-spacing .25s ease, transform .25s ease}
     .plate:hover .tittel{letter-spacing:.09em;transform:translateY(-1px)}
     .tittel::after{content:"";position:absolute;left:0;bottom:-3px;height:1px;width:24px;background:currentColor;opacity:.22;transition:width .25s ease, opacity .25s ease}
     .plate:hover .tittel::after{width:36px;opacity:.32}
@@ -89,15 +88,42 @@
 
     .commit{margin-top:18px;font-family:ui-monospace, SFMono-Regular, Menlo, monospace;background:rgba(0,0,0,.04);display:inline-block;padding:10px 12px;border-radius:8px;border:1px solid rgba(0,0,0,.06)}
 
-    @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.reveal{opacity:1;transform:none}}
+    /* Skeleton loader for kort */
+    .skeleton{position:relative;overflow:hidden;background:rgba(255,255,255,.55);border:1px solid rgba(0,0,0,.08);border-radius:var(--radius)}
+    .skeleton::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,.45) 50%, rgba(255,255,255,0) 100%);transform:translateX(-100%);animation:shimmer 1.6s infinite}
+    @keyframes shimmer{to{transform:translateX(100%)}}
+    .sk-cover{aspect-ratio:1/1;background:#e8d9c1}
+    .sk-meta{padding:10px 14px 14px}
+    .sk-bar{height:14px;background:rgba(0,0,0,.06);border-radius:6px;margin:8px 0}
+    .sk-bar.small{width:60%}
+
+    /* Velkomst/intro overlay */
+    .welcome{position:fixed;inset:0;z-index:999;display:grid;place-items:center;background:rgba(241,227,207,.96);backdrop-filter:saturate(1.1);transition:opacity .6s ease, visibility .6s ease}
+    .welcome.hide{opacity:0;visibility:hidden}
+    .welcome-card{padding:28px 32px;border-radius:14px;background:rgba(255,255,255,.7);border:1px solid rgba(0,0,0,.08);box-shadow:var(--shadow);text-align:center}
+    .welcome-card h2{font-family:"Archivo Black",sans-serif;margin:0 0 8px;font-size:1.4rem;letter-spacing:.02em}
+    .welcome-eq{height:6px;margin-top:12px;background:linear-gradient(90deg,var(--stripe1),var(--stripe2),var(--stripe3),rgba(0,0,0,.1));background-size:200% 100%;animation:stripeSlide 3.2s linear infinite;border-radius:999px;-webkit-mask:repeating-linear-gradient(90deg,#000 0 14px,transparent 14px 20px);mask:repeating-linear-gradient(90deg,#000 0 14px,transparent 14px 20px)}
+
+    @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.reveal{opacity:1;transform:none}.welcome{display:none}}
   </style>
 </head>
 <body>
+  <!-- Velkomst -->
+  <div class="welcome" id="welcome">
+    <div class="welcome-card">
+      <h2>Velkommen</h2>
+      <p style="margin:0;color:var(--muted)">Laster spillelister…</p>
+      <div class="welcome-eq"></div>
+    </div>
+  </div>
+
+  <!-- Brev -->
   <header class="brev container" aria-label="Brev fra Marcus til Athina">
     <h1>Kjære Athina</h1>
     <p>Jeg ville lage et lite sted for oss, et sted hvor musikken kan få samle seg, kapittel for kapittel. Når du trykker på listene, håper jeg du kjenner at jeg tenker på deg</p>
   </header>
 
+  <!-- Grid 3-spalter (kort er hele lenker) -->
   <main>
     <section class="grid" id="grid" aria-label="Spillelister"></section>
   </main>
@@ -116,16 +142,35 @@
       }catch(err){
         console.error('Kunne ikke laste playlist.json', err);
         renderPlaylists([]);
+      }finally{
+        // Skjul velkomst etter liten delay for smooth overgang
+        setTimeout(()=>document.getElementById('welcome')?.classList.add('hide'), 400);
       }
     }
 
     function sanitizeTitle(txt){
+      // Fjerner prefiks "Kapittel" slik du ønsket
       return String(txt||'').replace(/^\s*Kapittel\s*/i,'').trim();
+    }
+
+    function renderSkeleton(count=3){
+      const grid = document.getElementById('grid');
+      grid.innerHTML = '';
+      for(let i=0;i<count;i++){
+        const s = document.createElement('div');
+        s.className = 'skeleton reveal';
+        s.innerHTML = `<div class="stripe"></div><div class="sk-cover"></div><div class="sk-meta"><div class="sk-bar"></div><div class="sk-bar small"></div></div>`;
+        grid.appendChild(s);
+      }
+      revealInViewport();
     }
 
     function renderPlaylists(list){
       const grid = document.getElementById('grid');
       grid.innerHTML = '';
+
+      // Hvis listen er tom, behold skeletons (tre plasser)
+      if(!list.length){ renderSkeleton(3); return; }
 
       list.forEach((pl, idx) => {
         const card = document.createElement('a');
@@ -133,9 +178,9 @@
         card.href = pl.url; card.target = '_blank'; card.rel = 'noopener';
         card.setAttribute('aria-label', `${sanitizeTitle(pl.title)}: ${pl.subtitle}`);
 
-        // Faseforskyvning for å få en sammenhengende flyt
+        // Faseforskyvning for å få sammenhengende flyt mellom kort
         const phase = (idx * 140) + 'ms';
-        const speed = (3 + (idx % 3)*0.3) + 's';
+        const speed = (3 + (idx % 3)*0.25) + 's';
         card.style.setProperty('--phase', phase);
         card.style.setProperty('--stripe-speed', speed);
 
@@ -162,14 +207,27 @@
         card.append(stripe, img, meta);
         grid.appendChild(card);
 
+        // Subtil parallax ved mus
         card.addEventListener('mousemove', (e) => {
           const r = card.getBoundingClientRect();
           const dx = ((e.clientX - r.left) / r.width - 0.5) * 2;
           const dy = ((e.clientY - r.top) / r.height - 0.5) * 2;
-          img.style.transform = `scale(1.04) translate(${dx*4}px, ${dy*4}px) rotate(${dx*.3}deg)`;
+          img.style.transform = `scale(1.03) translate(${dx*4}px, ${dy*4}px) rotate(${dx*.3}deg)`;
         });
         card.addEventListener('mouseleave', () => { img.style.transform = ''; });
       });
+
+      // Fyll opp med usynlige plassholdere for å beholde 3-kolonne rytme visuelt
+      const remainder = list.length % 3;
+      if(remainder){
+        for(let i=0;i<3-remainder;i++){
+          const spacer = document.createElement('div');
+          spacer.style.visibility = 'hidden';
+          spacer.style.pointerEvents = 'none';
+          spacer.className = 'plate';
+          grid.appendChild(spacer);
+        }
+      }
 
       revealInViewport();
     }
@@ -181,14 +239,13 @@
       document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
     }
 
-    // Commit-melding i bunn
-    const commit = `feat(ui): flytende stripe + cover-drift, fjern \"Kapittel\" i titler, smidig reveal (#playlists)`;
+    // Init
+    const commit = `feat(playlists): behold bruntonet stripe-palett, tvungen 3-kol layout, tighter meta-spacing, skeleton + velkomst (#ui)`;
     document.addEventListener('DOMContentLoaded', ()=>{
-      const el = document.getElementById('commit-msg');
-      if(el) el.textContent = commit;
+      document.getElementById('commit-msg')?.textContent = commit;
+      renderSkeleton(3); // vis lasteskjelett umiddelbart
+      loadPlaylists();
     });
-
-    loadPlaylists();
   </script>
 </body>
 </html>
