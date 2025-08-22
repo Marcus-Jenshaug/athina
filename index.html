@@ -5,20 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Kapitler — Spillelister</title>
 
-  <!-- Typografi: Archivo Black (overskrifter) + Inter (brød) + Newsreader (brev) -->
+  <!-- Typografi: Archivo Black (tittel/kapittel) + Inter (brød) + Newsreader (brev) -->
   <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@300;400;500;600&family=Newsreader:ital,wght@1,400;1,500&display=swap" rel="stylesheet">
 
   <style>
     :root{
-      /* Nøytral “platecover” stil (papir + blekk) som passer begge coverne */
-      --paper:#F1E3CF;   /* krem bakgrunn */
-      --ink:#111111;     /* blekk/svart */
+      --paper:#F1E3CF;   /* krem bakgrunn (platecover-følelse) */
+      --ink:#111111;     /* blekk */
       --muted:#3D3A36;   /* dempet gråbrun */
 
       --maxw:1120px;
-      --radius:10px;
-      --shadow:0 12px 28px rgba(0,0,0,.12);
+      --radius:12px;
       --gap:26px;
+      --depth: 1200px;    /* perspektivdybde for mikro-parallax */
     }
 
     *{box-sizing:border-box}
@@ -27,9 +26,10 @@
       margin:0; background:var(--paper); color:var(--ink);
       font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
       line-height:1.65; -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+      overflow-x:hidden;
     }
 
-    /* Papirtekstur + subtil vignett for platecover-følelse */
+    /* Papirtekstur + subtil vignett for trykkfølelse */
     body::before, body::after{content:""; position:fixed; inset:0; pointer-events:none; z-index:0}
     body::before{
       background:
@@ -47,33 +47,42 @@
 
     .container{position:relative; z-index:1; max-width:var(--maxw); margin:0 auto; padding:48px 20px 24px}
 
-    /* Brev øverst */
+    /* Brev */
     header.brev{padding-top:56px; text-align:center}
     .brev h1{font-family:"Archivo Black", system-ui, sans-serif; font-weight:400; letter-spacing:0.01em; font-size:clamp(2rem,3.2vw,2.6rem); line-height:1.08; margin:0 0 12px}
     .brev p{font-family:"Newsreader", Georgia, serif; font-style:italic; color:var(--muted); max-width:70ch; margin:0 auto; font-size:clamp(1.02rem,1.2vw,1.15rem)}
 
-    /* Grid tre og tre */
-    main{padding:16px 20px 72px}
+    /* Grid */
+    main{padding:16px 20px 80px}
     .grid{display:grid; gap:var(--gap); grid-template-columns:repeat(1,minmax(0,1fr)); max-width:var(--maxw); margin:0 auto}
     @media (min-width:720px){ .grid{ grid-template-columns:repeat(2,minmax(0,1fr)); } }
     @media (min-width:1040px){ .grid{ grid-template-columns:repeat(3,minmax(0,1fr)); } }
 
+    /* Animations */
+    @keyframes fadeUp{ from{opacity:0; transform:translateY(14px)} to{opacity:1; transform:translateY(0)} }
+    @keyframes stripeFlow{ 0%{ background-position:0% 0 } 100%{ background-position:200% 0 } }
+
     /* Kort som hele lenker (klikkbare) */
-    .plate{ display:block; position:relative; border-radius:var(--radius); overflow:hidden; text-decoration:none; color:inherit; background:rgba(255,255,255,.55); border:1px solid rgba(0,0,0,.08); box-shadow:var(--shadow); transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease }
-    .plate:hover{ transform:translateY(-3px); box-shadow:0 16px 32px rgba(0,0,0,.16); border-color:rgba(0,0,0,.12) }
+    .plate{ display:block; position:relative; border-radius:var(--radius); overflow:hidden; text-decoration:none; color:inherit; background:rgba(255,255,255,.55); border:1px solid rgba(0,0,0,.08); box-shadow:0 12px 28px rgba(0,0,0,.12); transform-style:preserve-3d; perspective:var(--depth); transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease, filter .2s ease; opacity:0 }
+    .plate.revealed{ animation:fadeUp .5s ease forwards }
+    .plate:hover{ transform:translateY(-3px); box-shadow:0 16px 36px rgba(0,0,0,.16); border-color:rgba(0,0,0,.12); filter:saturate(1.02) }
 
-    .stripe{ content:""; position:absolute; inset:0 0 auto 0; height:6px; z-index:2; background:linear-gradient(90deg, rgba(0,0,0,.16), rgba(0,0,0,.06)) }
+    /* Dynamisk stripe – fanger dominante farger fra coveret (settes via CSS-variabler pr kort) */
+    .stripe{ position:absolute; inset:0 0 auto 0; height:7px; z-index:2; background:linear-gradient(90deg, var(--c1, #d97a5c), var(--c2, #e2bf8a) 33%, var(--c3, #9fb8c9) 66%, var(--c4, #47627a)); background-size:200% 100%; opacity:.9; animation: stripeFlow 10s linear infinite }
 
-    .cover{ width:100%; aspect-ratio:1/1; display:block; object-fit:cover; background:#e9dbc7; filter:contrast(.95) saturate(.95) }
+    .cover{ width:100%; aspect-ratio:1/1; display:block; object-fit:cover; background:#e9dbc7; filter:contrast(.95) saturate(.95); transform: translateZ(1px) }
 
-    .meta{ padding:14px 16px 16px; background:linear-gradient(180deg, rgba(241,227,207,.6), rgba(241,227,207,.4)); border-top:1px solid rgba(0,0,0,.06) }
+    .meta{ padding:14px 16px 16px; background:linear-gradient(180deg, rgba(241,227,207,.6), rgba(241,227,207,.45)); border-top:1px solid rgba(0,0,0,.06) }
 
-    .tittel{ margin:0 0 6px; font-family:"Archivo Black", system-ui, sans-serif; font-weight:400; text-transform:uppercase; letter-spacing:.005em; font-size:1.18rem; line-height:1.15 }
+    /* Mer kreativ typografi i kortet */
+    .eyebrow{ font-family:"Newsreader", Georgia, serif; font-style:italic; font-size:.9rem; color:var(--muted); letter-spacing:.03em; margin:0 0 6px; opacity:.9 }
+    .tittel{ margin:0 0 4px; font-family:"Archivo Black", system-ui, sans-serif; font-weight:400; letter-spacing:.01em; font-size: clamp(1.05rem, 1.2vw, 1.22rem); line-height:1.1 }
+    .tittel span{ background: linear-gradient(90deg, var(--c1, #d97a5c), var(--c2, #e2bf8a)); -webkit-background-clip:text; background-clip:text; color:transparent }
     .under{ margin:0; color:var(--muted); font-size:.98rem }
 
     footer{ text-align:center; color:var(--muted); font-size:.95rem; padding: 0 20px 64px }
     .sweet{ display:inline-flex; align-items:center; gap:10px }
-    .seed{ width:10px; height:10px; border-radius:50%; background:#E25C44 }
+    .seed{ width:10px; height:10px; border-radius:50%; background:var(--c1, #d97a5c) }
   </style>
 </head>
 <body>
@@ -93,6 +102,7 @@
   </footer>
 
   <script>
+    // Hent kapittellister fra playlist.json
     async function loadPlaylists(){
       try{
         const res = await fetch('playlist.json', { cache: 'no-cache' });
@@ -100,14 +110,77 @@
         renderPlaylists(Array.isArray(data) ? data : []);
       }catch(err){
         console.error('Kunne ikke laste playlist.json', err);
-        renderPlaylists([]);
       }
+    }
+
+    // Gjør kortene levende: scroll-reveal + mikro-parallax på hover
+    function addLiveInteractions(card, img){
+      // 1) Reveal on scroll
+      const io = new IntersectionObserver((entries)=>{
+        entries.forEach(e=>{ if(e.isIntersecting){ card.classList.add('revealed'); io.unobserve(card); } });
+      },{ threshold: 0.2 });
+      io.observe(card);
+
+      // 2) Tilt/parallax
+      card.addEventListener('mousemove', (ev)=>{
+        const r = card.getBoundingClientRect();
+        const cx = r.left + r.width/2; const cy = r.top + r.height/2;
+        const dx = (ev.clientX - cx) / r.width;  // -0.5..0.5
+        const dy = (ev.clientY - cy) / r.height; // -0.5..0.5
+        card.style.transform = `rotateX(${-dy*4}deg) rotateY(${dx*4}deg) translateY(-3px)`;
+        img.style.transform = `translateZ(18px) scale(1.03)`;
+      });
+      card.addEventListener('mouseleave', ()=>{
+        card.style.transform = '';
+        img.style.transform = 'translateZ(1px)';
+      });
+    }
+
+    // Finn en myk dominantfarge fra bildet og sett CSS-variabler på kortet
+    function colorizeFromImage(img, card){
+      try{
+        const c = document.createElement('canvas'); const ctx = c.getContext('2d', { willReadFrequently: true });
+        c.width = 32; c.height = 32; // nedskaler for rask sampling
+        img.crossOrigin = 'anonymous';
+        // når bildet er lastet
+        if(img.complete) sample(); else img.addEventListener('load', sample, { once:true });
+        function sample(){
+          try{
+            ctx.drawImage(img,0,0,c.width,c.height);
+            const data = ctx.getImageData(0,0,c.width,c.height).data;
+            let r=0,g=0,b=0,n=0;
+            for(let i=0;i<data.length;i+=4){
+              // dropp helt lyse/hvite piksler for bedre midttoner
+              const rr=data[i], gg=data[i+1], bb=data[i+2];
+              const l = 0.2126*rr + 0.7152*gg + 0.0722*bb;
+              if(l<245){ r+=rr; g+=gg; b+=bb; n++; }
+            }
+            r=Math.round(r/n)||180; g=Math.round(g/n)||150; b=Math.round(b/n)||120;
+            const hsl = rgbToHsl(r,g,b); // [h,s,l]
+            // Lag 4 nyanser rundt dominanten
+            const c1 = `hsl(${hsl[0]}, ${Math.min(78, hsl[1]+10)}%, ${Math.max(38, hsl[2]-6)}%)`;
+            const c2 = `hsl(${(hsl[0]+20)%360}, ${Math.max(45, hsl[1]-5)}%, ${Math.min(70, hsl[2]+14)}%)`;
+            const c3 = `hsl(${(hsl[0]+160)%360}, ${Math.max(35, hsl[1]-15)}%, ${Math.max(40, hsl[2]-2)}%)`;
+            const c4 = `hsl(${(hsl[0]+200)%360}, ${Math.max(35, hsl[1]-10)}%, ${Math.max(30, hsl[2]-8)}%)`;
+            card.style.setProperty('--c1', c1);
+            card.style.setProperty('--c2', c2);
+            card.style.setProperty('--c3', c3);
+            card.style.setProperty('--c4', c4);
+          }catch(e){ /* ignorer CORS på lokale filer */ }
+        }
+      }catch(e){ /* stil fallback */ }
+    }
+
+    function rgbToHsl(r,g,b){
+      r/=255; g/=255; b/=255; const max=Math.max(r,g,b), min=Math.min(r,g,b); let h,s,l=(max+min)/2;
+      if(max===min){ h=0; s=0 } else { const d=max-min; s=l>0.5? d/(2-max-min): d/(max+min); switch(max){case r:h=(g-b)/d+(g<b?6:0);break;case g:h=(b-r)/d+2;break;case b:h=(r-g)/d+4;break;} h/=6 }
+      return [Math.round(h*360), Math.round(s*100), Math.round(l*100)];
     }
 
     function renderPlaylists(list){
       const grid = document.getElementById('grid');
       grid.innerHTML = '';
-      list.forEach(pl => {
+      list.forEach((pl, idx) => {
         const card = document.createElement('a');
         card.className = 'plate';
         card.href = pl.url; card.target = '_blank'; card.rel = 'noopener';
@@ -115,12 +188,19 @@
 
         const stripe = document.createElement('span'); stripe.className = 'stripe';
         const img = document.createElement('img'); img.className = 'cover'; img.src = pl.cover; img.alt = `${pl.title} cover`; img.loading = 'lazy'; img.decoding = 'async';
+
         const meta = document.createElement('div'); meta.className = 'meta';
-        const h = document.createElement('h2'); h.className = 'tittel'; h.textContent = pl.title;
+        const eyebrow = document.createElement('p'); eyebrow.className = 'eyebrow'; eyebrow.textContent = 'Kapittel';
+        const h = document.createElement('h2'); h.className = 'tittel'; h.innerHTML = `<span>${pl.title}</span>`;
         const s = document.createElement('p'); s.className = 'under'; s.textContent = pl.subtitle;
-        meta.append(h,s);
+        meta.append(eyebrow, h, s);
+
         card.append(stripe, img, meta);
         grid.appendChild(card);
+
+        // Live detaljer
+        addLiveInteractions(card, img);
+        colorizeFromImage(img, card);
       });
     }
 
