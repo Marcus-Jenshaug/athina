@@ -198,10 +198,23 @@
     function renderPlaylists(list) {
       const grid = document.getElementById('grid');
       grid.innerHTML = ''; // Tøm gridet
+
+      // If the list is empty, display a message and stop.
       if (!list || list.length === 0) {
         grid.innerHTML = `<p class="empty-message">Fant ingen spillelister.</p>`;
         return;
       }
+
+      // --- NEW: Create and add a single stripe above the grid ---
+      const mainElement = document.querySelector('main');
+      // Add the stripe only if it doesn't already exist
+      if (mainElement && !mainElement.querySelector('.stripe')) {
+        const stripe = document.createElement('span');
+        stripe.className = 'stripe';
+        mainElement.prepend(stripe);
+      }
+      // --- END NEW ---
+
       list.forEach((pl) => {
         const card = document.createElement('a');
         card.className = 'plate';
@@ -209,15 +222,18 @@
         card.target = '_blank';
         card.rel = 'noopener';
         card.setAttribute('aria-label', `${pl.title}: ${pl.subtitle}`);
-        const stripe = document.createElement('span');
-        stripe.className = 'stripe';
+
+        // The stripe is no longer created here.
+
         const img = document.createElement('img');
         img.className = 'cover';
         img.src = pl.cover;
         img.alt = '';
         img.loading = 'lazy';
         img.decoding = 'async';
-        card.append(stripe, img);
+
+        // The stripe is no longer appended here.
+        card.append(img);
         grid.appendChild(card);
       });
     }
