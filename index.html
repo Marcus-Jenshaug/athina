@@ -73,8 +73,7 @@
 
     @media (prefers-reduced-motion: reduce) {
       body,
-      .plate,
-      .stripe {
+      .plate {
         animation: none;
       }
     }
@@ -128,10 +127,6 @@
     header.container, main, footer {
       content-visibility: auto;
     }
-
-    /* Stripe med rolig, sømløs fargedrift */
-    .stripe { position:absolute; top:0; left:0; right:0; height:6px; background:linear-gradient(90deg,var(--acc-blue),var(--acc-red),var(--acc-gold),var(--acc-plum),var(--acc-sky),var(--acc-blue)); background-size:500% 100%; animation: stripeFlow 120s linear infinite; }
-    @keyframes stripeFlow { 0%{background-position:0% 50%;} 100%{background-position:100% 50%;} }
 
     .cover { width:100%; aspect-ratio:1/1; object-fit:cover; display:block; }
 
@@ -198,23 +193,10 @@
     function renderPlaylists(list) {
       const grid = document.getElementById('grid');
       grid.innerHTML = ''; // Tøm gridet
-
-      // If the list is empty, display a message and stop.
       if (!list || list.length === 0) {
         grid.innerHTML = `<p class="empty-message">Fant ingen spillelister.</p>`;
         return;
       }
-
-      // --- NEW: Create and add a single stripe above the grid ---
-      const mainElement = document.querySelector('main');
-      // Add the stripe only if it doesn't already exist
-      if (mainElement && !mainElement.querySelector('.stripe')) {
-        const stripe = document.createElement('span');
-        stripe.className = 'stripe';
-        mainElement.prepend(stripe);
-      }
-      // --- END NEW ---
-
       list.forEach((pl) => {
         const card = document.createElement('a');
         card.className = 'plate';
@@ -222,17 +204,12 @@
         card.target = '_blank';
         card.rel = 'noopener';
         card.setAttribute('aria-label', `${pl.title}: ${pl.subtitle}`);
-
-        // The stripe is no longer created here.
-
         const img = document.createElement('img');
         img.className = 'cover';
         img.src = pl.cover;
         img.alt = '';
         img.loading = 'lazy';
         img.decoding = 'async';
-
-        // The stripe is no longer appended here.
         card.append(img);
         grid.appendChild(card);
       });
