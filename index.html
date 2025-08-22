@@ -56,36 +56,51 @@
     @keyframes grainShift { 0%,100%{transform:translate3d(0,0,0)} 50%{transform:translate3d(1px,-1px,0)} }
     @keyframes vignetteDrift { 0%{transform:translate3d(0,0,0)} 50%{transform:translate3d(1.5%,-1.5%,0)} 100%{transform:translate3d(0,0,0)} }
 
-    /* Bevegelig lysglimt: legges OVER body-bakgrunn men UNDER semitransparent tint */
-    .glow{position:fixed;inset:0;z-index:1;pointer-events:none;mix-blend-mode:screen;opacity:.40}
-    .glow::before{content:"";position:absolute;width:55vmax;height:55vmax;border-radius:50%;
-      background:radial-gradient(closest-side, var(--acc-blue), transparent 60%),
-                 radial-gradient(closest-side, var(--acc-red), transparent 65%),
-                 radial-gradient(closest-side, var(--acc-gold), transparent 70%),
-                 radial-gradient(closest-side, var(--acc-plum), transparent 75%),
-                 radial-gradient(closest-side, var(--acc-sky), transparent 80%);
-      /* OPTIMIZED: Using a more performant SVG filter instead of CSS blur(). */
-      filter:url(#svg-glow);
-      transform:translate3d(-20%, -20%, 0);
-      animation: gleamOrbit 120s linear infinite;
+    /* Ny, lettvekts glød */
+    .glow-wrap { position: fixed; inset: 0; z-index: 1; pointer-events: none; }
+    .glow-layer {
+      position: absolute; inset: -15% -15%;
+      /* 2–3 radiale graderinger, ingen filter */
+      background:
+        radial-gradient(35% 35% at 20% 25%, rgba(0,115,198,0.35), transparent 60%),
+        radial-gradient(40% 40% at 75% 70%, rgba(217,60,60,0.28), transparent 62%),
+        radial-gradient(30% 30% at 50% 15%, rgba(201,166,107,0.22), transparent 65%);
+      opacity: 0.35;
+      will-change: transform, opacity;
+      contain: paint;
+      transform: translate3d(0,0,0) scale(1);
+      animation: glowDrift 120s linear infinite;
     }
-    .glow.b{opacity:.35;mix-blend-mode:screen}
-    .glow.b::before{width:50vmax;height:50vmax;animation: gleamOrbit2 140s linear infinite}
-    @keyframes gleamOrbit {
-      0%{transform:translate3d(-25%, -20%, 0) rotate(0deg)}
-      25%{transform:translate3d(35%, -10%, 0) rotate(90deg)}
-      50%{transform:translate3d(20%, 30%, 0) rotate(180deg)}
-      75%{transform:translate3d(-30%, 15%, 0) rotate(270deg)}
-      100%{transform:translate3d(-25%, -20%, 0) rotate(360deg)}
+
+    /* Valgfri andre layer for dybde (kan tones ned på mobil) */
+    .glow-layer.b {
+      opacity: 0.28;
+      background:
+        radial-gradient(30% 30% at 30% 75%, rgba(91,74,88,0.22), transparent 60%),
+        radial-gradient(28% 28% at 80% 25%, rgba(174,198,207,0.18), transparent 62%);
+      animation: glowDriftSlow 140s linear infinite;
     }
-    @keyframes gleamOrbit2 {
-      0%{transform:translate3d(30%, 20%, 0) rotate(0deg)}
-      25%{transform:translate3d(-20%, 25%, 0) rotate(-90deg)}
-      50%{transform:translate3d(-30%, -15%, 0) rotate(-180deg)}
-      75%{transform:translate3d(25%, -25%, 0) rotate(-270deg)}
-      100%{transform:translate3d(30%, 20%, 0) rotate(-360deg)}
+
+    @keyframes glowDrift {
+      0%   { transform: translate3d(-2%, -1%, 0) scale(1.02); }
+      50%  { transform: translate3d( 2%,  1%, 0) scale(1.00); }
+      100% { transform: translate3d(-2%, -1%, 0) scale(1.02); }
     }
-    @media (prefers-reduced-motion:reduce){.glow::before{animation:none}}
+    @keyframes glowDriftSlow {
+      0%   { transform: translate3d( 2%,  1%, 0) scale(1.01); }
+      50%  { transform: translate3d(-2%, -1%, 0) scale(1.00); }
+      100% { transform: translate3d( 2%,  1%, 0) scale(1.01); }
+    }
+
+    /* Mobil og redusert bevegelse */
+    @media (max-width: 768px), (hover: none), (pointer: coarse) {
+      .glow-layer { animation: none; opacity: 0.28; }
+      .glow-layer.b { display: none; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .glow-layer, .glow-layer.b { animation: none; }
+    }
 
     .container { max-width:var(--maxw); margin:0 auto; padding:48px 20px 24px; position:relative; z-index:2; }
 
@@ -104,6 +119,11 @@
     @keyframes wind { 0%{ transform:translateY(0) rotate(0deg);} 25%{ transform:translateY(-6px) rotate(-0.25deg);} 50%{ transform:translateY(3px) rotate(0.2deg);} 75%{ transform:translateY(-4px) rotate(-0.15deg);} 100%{ transform:translateY(0) rotate(0deg);} }
     @media (prefers-reduced-motion: reduce){ .plate{ animation:none; } }
 
+    /* Ytelsesforbedringer for rendering */
+    header.container, main, footer {
+      content-visibility: auto;
+    }
+
     /* Stripe med rolig, sømløs fargedrift */
     .stripe { position:absolute; top:0; left:0; right:0; height:6px; background:linear-gradient(90deg,var(--acc-blue),var(--acc-red),var(--acc-gold),var(--acc-plum),var(--acc-sky),var(--acc-blue)); background-size:500% 100%; animation: stripeFlow 120s linear infinite; }
     @keyframes stripeFlow { 0%{background-position:0% 50%;} 100%{background-position:100% 50%;} }
@@ -117,14 +137,11 @@
   </style>
 </head>
 <body>
-  <svg style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true">
-    <filter id="svg-glow">
-      <feGaussianBlur in="SourceGraphic" stdDeviation="25" />
-    </filter>
-  </svg>
-  <!-- Glød-lag (bak tint) -->
-  <div class="glow a" aria-hidden="true"></div>
-  <div class="glow b" aria-hidden="true"></div>
+  <!-- Ny, lettvekts glød -->
+  <div class="glow-wrap" aria-hidden="true">
+    <div class="glow-layer"></div>
+    <div class="glow-layer b"></div>
+  </div>
 
   <header class="brev container" aria-label="Brev fra Marcus til Athina">
     <h1>Kjære Athina</h1>
@@ -160,7 +177,7 @@
         card.className='plate';
         card.href=pl.url;card.target='_blank';card.rel='noopener';
         const stripe=document.createElement('span');stripe.className='stripe';
-        const img=document.createElement('img');img.className='cover';img.src=pl.cover;img.alt=`${pl.title||''} cover`;img.loading='lazy';
+        const img=document.createElement('img');img.className='cover';img.src=pl.cover;img.alt=`${pl.title||''} cover`;img.loading='lazy';img.decoding='async';
         card.append(stripe,img);
         grid.appendChild(card);
       });
