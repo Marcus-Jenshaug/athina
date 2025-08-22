@@ -4,9 +4,9 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Kapitler — Spillelister</title>
-  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@300;400;500;600&family=Newsreader:ital,wght@1,400;1,500&display=swap" rel="stylesheet">
   <style>
-    :root {
+    :root{
       --paper:#F1E3CF;
       --ink:#111;
       --muted:#3D3A36;
@@ -14,111 +14,71 @@
       --radius:10px;
       --shadow:0 12px 28px rgba(0,0,0,.12);
       --gap:26px;
+      --c1:#0073C6;
+      --c2:#D93C3C;
+      --c3:#F3B36B;
     }
-    * { box-sizing:border-box; }
-    body {
-      margin:0;
-      background:var(--paper);
-      color:var(--ink);
-      font-family:Inter, sans-serif;
-      line-height:1.65;
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; background:var(--paper); color:var(--ink);
+      font-family:Inter, sans-serif; line-height:1.65;
       -webkit-font-smoothing:antialiased;
     }
 
-    body::before {
-      content:"";
-      position:fixed;
-      inset:0;
-      pointer-events:none;
-      background: radial-gradient(120% 120% at 75% 15%, rgba(0,0,0,.05), transparent 60%),
-                  radial-gradient(140% 120% at 10% 90%, rgba(0,0,0,.04), transparent 60%);
-      mix-blend-mode:multiply;
-      opacity:.25;
+    /* Forsterket papirtekstur */
+    body::before, body::after{content:""; position:fixed; inset:0; pointer-events:none; z-index:0}
+    body::before{ 
+      background:radial-gradient(120% 120% at 75% 15%, rgba(0,0,0,.06), transparent 60%),
+                 radial-gradient(140% 120% at 10% 90%, rgba(0,0,0,.06), transparent 60%);
+      mix-blend-mode:multiply; opacity:.3 
+    }
+    body::after{ 
+      opacity:.22; mix-blend-mode:multiply; 
+      background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300"><filter id="f"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23f)" opacity="0.25"/></svg>');
     }
 
-    .container { max-width:var(--maxw); margin:0 auto; padding:48px 20px 24px; }
+    .container{position:relative; z-index:1; max-width:var(--maxw); margin:0 auto; padding:48px 20px 24px}
 
-    header.brev { padding-top:56px; text-align:center; }
-    .brev h1 {
-      font-family:"Archivo Black";
-      font-size:clamp(2rem,3.2vw,2.6rem);
-      margin:0 0 12px;
+    header.brev{text-align:center; padding-top:56px}
+    .brev h1{ font-family:"Archivo Black"; font-size:clamp(2rem,3.2vw,2.6rem); margin:0 0 12px }
+    .brev p{ font-family:"Newsreader", serif; font-style:italic; color:var(--muted); max-width:70ch; margin:0 auto; font-size:1.1rem; }
+
+    main{padding:16px 20px 96px}
+    .grid{ display:grid; gap:var(--gap); grid-template-columns:repeat(3,1fr); max-width:var(--maxw); margin:0 auto }
+
+    .plate{ display:block; position:relative; border-radius:var(--radius); overflow:hidden; background:rgba(255,255,255,.55); border:1px solid rgba(0,0,0,.08); box-shadow:var(--shadow); transition:transform .25s ease, box-shadow .25s ease; }
+    .plate:hover{ transform:translateY(-4px); box-shadow:0 16px 32px rgba(0,0,0,.16); border-color:rgba(0,0,0,.12) }
+
+    .stripe{ position:absolute; inset:0 0 auto 0; height:6px; z-index:2;
+      background:linear-gradient(90deg, var(--c1), var(--c2), var(--c3), var(--c1));
+      background-size:200% 100%;
+      animation: stripeShift 14s linear infinite;
     }
-    .brev p {
-      font-family:"Newsreader", serif;
-      font-style:italic;
-      color:var(--muted);
-      max-width:70ch;
-      margin:0 auto;
-    }
+    @keyframes stripeShift{ to{ background-position:-200% 0 } }
 
-    main { padding:16px 20px 72px; }
-    .grid {
-      display:grid;
-      gap:var(--gap);
-      grid-template-columns:repeat(3,1fr);
-      max-width:var(--maxw);
-      margin:0 auto;
-    }
+    .cover{ width:100%; aspect-ratio:1/1; display:block; object-fit:cover; }
 
-    .plate {
-      display:block;
-      border-radius:var(--radius);
-      overflow:hidden;
-      background:rgba(255,255,255,.55);
-      border:1px solid rgba(0,0,0,.08);
-      box-shadow:var(--shadow);
-      text-decoration:none;
-      color:inherit;
-      position:relative;
-      transform:translateY(0);
-      transition:transform .4s ease, box-shadow .4s ease;
-      animation: floaty 6s ease-in-out infinite;
-    }
-
-    .plate:nth-child(2n) { animation-delay:1.2s; }
-    .plate:nth-child(3n) { animation-delay:2.4s; }
-
-    @keyframes floaty {
-      0%,100% { transform:translateY(0); }
-      50% { transform:translateY(-6px); }
-    }
-
-    .stripe {
+    footer{ position:relative; z-index:1; text-align:center; padding:48px 20px 72px; max-width:var(--maxw); margin:0 auto; }
+    .quote{ font-family:"Newsreader", Georgia, serif; font-style:italic; font-size:1.3rem; line-height:1.75; color:var(--muted); position:relative; }
+    .quote::before, .quote::after{
+      content:'\201C';
+      font-size:4rem;
       position:absolute;
-      top:0; left:0; right:0;
-      height:6px;
-      background: linear-gradient(90deg, #0073C6, #D93C3C, #C9A66B, #5B4A58, #AEC6CF);
-      background-size: 400% 100%;
-      animation: stripeFlow 20s linear infinite;
+      color:rgba(0,0,0,.15);
+      font-family:serif;
     }
+    .quote::before{ left:-20px; top:-20px }
+    .quote::after{ content:'\201D'; right:-20px; bottom:-40px }
 
-    @keyframes stripeFlow {
-      0% { background-position:0% 50%; }
-      100% { background-position:400% 50%; }
-    }
-
-    .cover {
-      width:100%;
-      aspect-ratio:1/1;
-      object-fit:cover;
-      display:block;
-    }
-
-    footer {
-      text-align:center;
-      color:var(--muted);
-      font-size:.95rem;
-      padding:0 20px 64px;
-    }
-    .sweet { display:inline-flex; align-items:center; gap:10px; }
-    .seed { width:10px; height:10px; border-radius:50%; background:#E25C44; }
+    @media (prefers-reduced-motion:reduce){ *{animation:none!important; transition:none!important} }
   </style>
 </head>
 <body>
   <header class="brev container" aria-label="Brev fra Marcus til Athina">
     <h1>Kjære Athina</h1>
-    <p>Jeg ville lage et lite sted for oss, et sted hvor musikken kan få samle seg, kapittel for kapittel. Når du trykker på listene, håper jeg du kjenner at jeg tenker på deg</p>
+    <p>Jeg har laget dette lille stedet for oss – et sted hvor musikken kan samle seg, kapittel for kapittel. Når du åpner listene, håper jeg du kjenner at tankene mine er hos deg.</p>
   </header>
 
   <main>
@@ -126,45 +86,35 @@
   </main>
 
   <footer>
-    <span class="sweet"><span class="seed"></span> Laget med omtanke — Marcus</span>
+    <p class="quote">If we're dating. I don't want to be your first priority. I shouln't be. I want your first priority to be you, your ambitions, your life, and your future. Stay focused. I want the best for you. Don't let me be your distraction, let me be your motivation, your support, and your help to grow. I'm not gonna let you give up on yourself. I got you if you got me.</p>
   </footer>
 
   <script>
     async function loadPlaylists(){
-      try {
-        const res = await fetch('playlist.json', { cache: 'no-cache' });
+      try{
+        const res = await fetch('playlist.json', { cache:'no-cache' });
         const data = await res.json();
         renderPlaylists(Array.isArray(data) ? data : []);
-      } catch(err){
-        console.error('Kunne ikke laste playlist.json', err);
-      }
+      }catch(e){ console.error(e); }
     }
 
     function renderPlaylists(list){
       const grid = document.getElementById('grid');
-      grid.innerHTML = '';
+      grid.innerHTML='';
       list.forEach(pl => {
         const card = document.createElement('a');
-        card.className = 'plate';
-        card.href = pl.url;
-        card.target = '_blank';
-        card.rel = 'noopener';
+        card.className='plate';
+        card.href=pl.url; card.target='_blank'; card.rel='noopener';
 
-        const stripe = document.createElement('span');
-        stripe.className = 'stripe';
-
-        const img = document.createElement('img');
-        img.className = 'cover';
-        img.src = pl.cover;
-        img.alt = `${pl.title} cover`;
-        img.loading = 'lazy';
+        const stripe=document.createElement('span'); stripe.className='stripe';
+        const img=document.createElement('img'); img.className='cover'; img.src=pl.cover; img.alt=(pl.title||'')+" cover"; img.loading='lazy';
 
         card.append(stripe,img);
         grid.appendChild(card);
       });
     }
 
-    loadPlaylists();
+    document.addEventListener('DOMContentLoaded', loadPlaylists);
   </script>
 </body>
 </html>
