@@ -8,172 +8,97 @@
   <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@300;400;600&family=Newsreader:ital,wght@0,300;1,300&display=swap" rel="stylesheet">
   <style>
     :root{
-      /* 1) FARGER & PAPIR */
-      --paper:#F7F2E9; /* krem, trykkbar bakgrunn */
-      --ink:#111111;   /* blekk */
-      --muted:#3D3A36; /* dempet */
-      /* Aksenter (samme palett som brukt i cover/stripe) */
+      --paper:#F7F2E9;
+      --ink:#111111;
+      --muted:#3D3A36;
       --acc-blue:#0073C6;
       --acc-red:#D93C3C;
       --acc-gold:#C9A66B;
       --acc-plum:#5B4A58;
       --acc-sky:#AEC6CF;
-
       --maxw:1200px;
-      --outer-pad:56px; /* store margins/padding */
-      --gap:28px;       /* luft mellom elementer */
+      --outer-pad:56px;
+      --gap:28px;
       --radius:10px;
       --shadow:0 10px 24px rgba(0,0,0,.10);
-
-      --ease: cubic-bezier(.22,.61,.36,1);
+      --ease:cubic-bezier(.22,.61,.36,1);
     }
-
     *{box-sizing:border-box}
     html,body{height:100%}
-
     body{
-      margin:0; background:var(--paper); color:var(--ink);
-      font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      line-height:1.65; -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+      margin:0;background:var(--paper);color:var(--ink);
+      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      line-height:1.65;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
     }
-
-    /* 4) PAPIRTEKSTUR + ORGANISKE FORMER */
-    body::before, body::after{content:""; position:fixed; inset:0; pointer-events:none; z-index:0}
-    /* Fibers/noise */
-    body::before{opacity:.22; mix-blend-mode:multiply; background-image:url('data:image/svg+xml;utf8,\
-<svg xmlns="http://www.w3.org/2000/svg" width="260" height="260">\
- <filter id="f"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" stitchTiles="stitch"/></filter>\
- <rect width="100%" height="100%" filter="url(%23f)" opacity="0.28"/>\
-</svg>');}
-    /* Vignette */
-    body::after{opacity:.20; background:radial-gradient(120% 120% at 75% 15%, rgba(0,0,0,.06), transparent 55%), radial-gradient(140% 120% at 10% 90%, rgba(0,0,0,.06), transparent 55%); mix-blend-mode:multiply}
-
-    /* Organiske collageformer (svært subtile) */
-    .shape{position:fixed; z-index:0; pointer-events:none; opacity:.10; filter:blur(.2px) saturate(.9); mix-blend-mode:multiply}
-    .shape.a{top:-60px; left:-40px; width:44vw; max-width:620px; aspect-ratio:1/1; background:radial-gradient(60% 60% at 40% 40%, var(--acc-sky), transparent 70%), radial-gradient(45% 45% at 70% 70%, var(--acc-gold), transparent 70%)}
-    .shape.b{bottom:-80px; right:-60px; width:48vw; max-width:680px; aspect-ratio:1/1; background:radial-gradient(55% 55% at 60% 40%, var(--acc-plum), transparent 70%), radial-gradient(40% 40% at 30% 70%, var(--acc-red), transparent 70%)}
-
-    /* 2) TYPOGRAFI (print-inspirert) */
-    .ink{ text-shadow:0 .3px 0 rgba(0,0,0,.2) } /* subtil blekkspredning */
-    .lead{ font-family:"Newsreader", Georgia, serif; font-weight:300; font-style:italic }
-
-    /* 3) 12-kol GRID med store margins */
-    .page{ position:relative; z-index:1; max-width:var(--maxw); margin:0 auto; padding:var(--outer-pad) 24px }
-    .grid12{ display:grid; grid-template-columns:repeat(12, minmax(0,1fr)); gap:var(--gap) }
-
-    header.brev{ margin-bottom:calc(var(--outer-pad) * .6) }
-    .brev h1{ font-family:"Archivo Black", sans-serif; font-weight:400; letter-spacing:.01em; font-size:clamp(2rem,3.2vw,2.8rem); line-height:1.08; margin:0 0 10px }
-    .brev p{      font-family:"Newsreader", Georgia, serif; font-weight:300; font-style:italic; color:var(--muted);      max-width:70ch; margin:0 auto; font-size:clamp(1.02rem,1.2vw,1.15rem);      text-shadow:0 .3px 0 rgba(0,0,0,.15);    }
-
-    /* 6) KAPITTELSTIL */
-    .chapter{ align-items:end; margin:8px 0 4px }
-    .chapter h2{ grid-column:2 / span 10; font-family:"Archivo Black", sans-serif; font-weight:400; letter-spacing:.06em; text-transform:uppercase; font-size:clamp(1rem,1.6vw,1.1rem); color:var(--ink); opacity:.9 }
-    .chapter .rule{ grid-column:2 / span 10; height:1px; background:linear-gradient(90deg, rgba(0,0,0,.18), rgba(0,0,0,.04) 60%, transparent) }
-
-    /* KORT/ALBUM – 3 per rad, integrert i 12-kol (spenner 4 kol) */
-    .cards{ grid-column:2 / span 10; display:grid; grid-template-columns:repeat(12, minmax(0,1fr)); gap:var(--gap) }
-    .cards .cell{ grid-column:span 4; }
-
-    .plate{      display:block; position:relative; border-radius:var(--radius); overflow:hidden;      background:rgba(247,242,233,.42); /* papirtint, ikke hvit */      border:1px solid rgba(0,0,0,.10); box-shadow:var(--shadow);      text-decoration:none; color:inherit; transform:translateZ(0);      animation: breathe 9s ease-in-out infinite; will-change:transform;    }
-    /* tekstur på kortet */
+    body::before,body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:0}
+    body::before{opacity:.22;mix-blend-mode:multiply;background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="260" height="260"><filter id="f"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23f)" opacity="0.28"/></svg>');}
+    body::after{opacity:.20;background:radial-gradient(120% 120% at 75% 15%,rgba(0,0,0,.06),transparent 55%),radial-gradient(140% 120% at 10% 90%,rgba(0,0,0,.06),transparent 55%);mix-blend-mode:multiply}
+    .shape{position:fixed;z-index:0;pointer-events:none;opacity:.10;filter:blur(.2px) saturate(.9);mix-blend-mode:multiply}
+    .shape.a{top:-60px;left:-40px;width:44vw;max-width:620px;aspect-ratio:1/1;background:radial-gradient(60% 60% at 40% 40%,var(--acc-sky),transparent 70%),radial-gradient(45% 45% at 70% 70%,var(--acc-gold),transparent 70%)}
+    .shape.b{bottom:-80px;right:-60px;width:48vw;max-width:680px;aspect-ratio:1/1;background:radial-gradient(55% 55% at 60% 40%,var(--acc-plum),transparent 70%),radial-gradient(40% 40% at 30% 70%,var(--acc-red),transparent 70%)}
+    .ink{text-shadow:0 .3px 0 rgba(0,0,0,.2)}
+    .lead{font-family:"Newsreader",Georgia,serif;font-weight:300;font-style:italic}
+    .page{position:relative;z-index:1;max-width:var(--maxw);margin:0 auto;padding:var(--outer-pad) 24px}
+    .grid12{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:var(--gap)}
+    header.brev{margin-bottom:calc(var(--outer-pad) * .6)}
+    .brev h1{font-family:"Archivo Black",sans-serif;font-weight:400;letter-spacing:.01em;font-size:clamp(2rem,3.2vw,2.8rem);line-height:1.08;margin:0 0 10px}
+    .brev p{font-family:"Newsreader",Georgia,serif;font-weight:300;font-style:italic;color:var(--muted);max-width:70ch;margin:0 auto;font-size:clamp(1.02rem,1.2vw,1.15rem);text-shadow:0 .3px 0 rgba(0,0,0,.15)}
+    .cards{grid-column:2 / span 10;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:var(--gap)}
+    .cards .cell{grid-column:span 4}
+    .plate{display:block;position:relative;border-radius:var(--radius);overflow:hidden;background:rgba(247,242,233,.42);border:1px solid rgba(0,0,0,.10);box-shadow:var(--shadow);text-decoration:none;color:inherit;transform:translateZ(0);animation:breathe 9s ease-in-out infinite;will-change:transform}
     .plate::after{content:"";position:absolute;inset:0;pointer-events:none;mix-blend-mode:multiply;opacity:.10;background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="140" height="140"><filter id="f"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23f)" opacity="0.25"/></svg>');}
-    .plate:hover{ box-shadow:0 10px 20px rgba(0,0,0,.12); filter:saturate(.98) brightness(.98); }
-
-    @keyframes breathe{ 0%,100%{ transform:translateY(0) } 50%{ transform:translateY(-3px) } }
-
-    /* Sømløs stripe – aksentpalett begrenset */
-    .stripe{ position:absolute; inset:0 0 auto 0; height:6px; z-index:2; background:linear-gradient(90deg, var(--acc-blue), var(--acc-red), var(--acc-gold), var(--acc-plum), var(--acc-sky), var(--acc-blue)); background-size:300% 100%; -webkit-mask:repeating-linear-gradient(90deg,#000 0 14px,transparent 14px 20px); mask:repeating-linear-gradient(90deg,#000 0 14px,transparent 14px 20px); animation: stripeShift 18s linear infinite }
-    @keyframes stripeShift{ to{ background-position:-300% 0 } }
-
-    .cover{ width:100%; aspect-ratio:1/1; display:block; object-fit:cover; filter:contrast(.96) saturate(.96) }
-
-    /* 5) Subtile scroll-reveals (organisk) */
-    .reveal{ opacity:0; transform:translateY(10px) }
-    .reveal.in{ opacity:1; transform:none; transition:opacity .9s var(--ease), transform .9s var(--ease) }
-
-    /* FOOTER – lavmælt sitat midtstilt på én linje med highlights */
-    footer{ padding:60px 24px 90px }
-    .footer-note{ font: 300 0.95rem/1.6 Inter, system-ui; color:var(--muted); text-align:center; margin:0 0 10px }
-    .quote{ max-width:980px; margin:0 auto; text-align:center; font-family:"Newsreader", Georgia, serif; font-weight:300; font-style:italic; font-size:1.05rem; line-height:1.9; color:var(--muted) }
-    .quote strong{ font-family:"Archivo Black", sans-serif; font-weight:400; font-style:normal; font-size:1.08rem; letter-spacing:.03em; color:var(--ink) }
-
-    @media (max-width:900px){ .cards .cell{ grid-column:span 6 } }
-    @media (max-width:640px){ .cards{ grid-column:1 / -1 } .chapter h2, .chapter .rule{ grid-column:1 / -1 } .cards .cell{ grid-column:span 12 } }
-
-    /* Redusert bevegelse */
-    @media (prefers-reduced-motion:reduce){ *{animation:none!important; transition:none!important} .reveal{opacity:1; transform:none} }
+    .plate:hover{box-shadow:0 10px 20px rgba(0,0,0,.12);filter:saturate(.98) brightness(.98)}
+    @keyframes breathe{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+    .stripe{position:absolute;inset:0 0 auto 0;height:6px;z-index:2;background:linear-gradient(90deg,var(--acc-blue),var(--acc-red),var(--acc-gold),var(--acc-plum),var(--acc-sky),var(--acc-blue));background-size:600% 100%;animation:stripeShift 24s linear infinite}
+    @keyframes stripeShift{0%{background-position:0% 0}100%{background-position:-600% 0}}
+    .cover{width:100%;aspect-ratio:1/1;display:block;object-fit:cover;filter:contrast(.96) saturate(.96)}
+    footer{padding:60px 24px 90px}
+    .footer-note{font:300 0.95rem/1.6 Inter,system-ui;color:var(--muted);text-align:center;margin:0 0 10px}
+    .quote{max-width:980px;margin:0 auto;text-align:center;font-family:"Newsreader",Georgia,serif;font-weight:300;font-style:italic;font-size:1.05rem;line-height:1.9;color:var(--muted)}
+    .quote strong{font-family:"Archivo Black",sans-serif;font-weight:400;font-style:normal;font-size:1.08rem;letter-spacing:.03em;color:var(--ink)}
+    @media(max-width:900px){.cards .cell{grid-column:span 6}}
+    @media(max-width:640px){.cards{grid-column:1 / -1}.cards .cell{grid-column:span 12}}
+    @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.reveal{opacity:1;transform:none}}
   </style>
 </head>
 <body>
-  <!-- Organiske bakgrunnsformer -->
   <div class="shape a" aria-hidden="true"></div>
   <div class="shape b" aria-hidden="true"></div>
-
   <div class="page">
     <header class="brev grid12">
       <h1 class="ink" style="grid-column:2 / span 10">Kjære Athina</h1>
       <p class="lead" style="grid-column:2 / span 10">Jeg har laget dette lille stedet for oss, et sted hvor musikken kan samle seg, kapittel for kapittel. Når du åpner listene, håper jeg du kjenner at tankene mine er hos deg.</p>
     </header>
-
-    <!-- 6) Kapittelform -->
-    <section class="chapter grid12">
-      <h2>Chapter One</h2>
-      <div class="rule"></div>
-    </section>
-
-    <!-- 3) Kort i 12-kol (3 per rad, hver spenner 4 kolonner) -->
     <section class="cards grid12" id="grid" aria-label="Spillelister"></section>
-
-    <!-- Neste kapittel-linje (dekorativ, narrativ) -->
-    <section class="chapter grid12" style="margin-top:40px">
-      <h2>Chapter Two</h2>
-      <div class="rule"></div>
-    </section>
-
-    <!-- 5) Lowkey sitat i bunnen -->
     <footer class="grid12">
-      <p class="footer-note" style="grid-column:2 / span 10">En liten hilsen fra meg – et sitat jeg satte pris på:</p>
-      <p class="quote" style="grid-column:2 / span 10"><strong>If we're dating</strong> I don't want to be your first priority. I shouldn't be. I want your first priority to be you – your ambitions, your life, and your future. <strong>Stay focused</strong>, I want the best for you. Don't let me be your distraction – let me be your motivation, your support, your help to grow. <strong>I'm not gonna let you give up on yourself.</strong> I got you if you got me.</p>
+      <p class="footer-note" style="grid-column:2 / span 10">En liten hilsen fra meg, et sitat jeg satte pris på.</p>
+      <p class="quote" style="grid-column:2 / span 10"><strong>If we're dating</strong>, I don't want to be your first priority. I shouldn't be. I want your first priority to be you, your ambitions, your life, and your future. <strong>Stay focused</strong>, I want the best for you. I want to be your motivation, your support, your help to grow. <strong>I'm not gonna let you give up on yourself.</strong> I got you if you got me.</p>
     </footer>
   </div>
-
   <script>
-    // Fade-in på scroll
-    const onReveal = new IntersectionObserver((entries, o) => {
-      entries.forEach(en => { if(en.isIntersecting){ en.target.classList.add('in'); o.unobserve(en.target); } });
-    }, { threshold:.12 });
-
-    function observeReveals(){ document.querySelectorAll('.reveal').forEach(el => onReveal.observe(el)); }
-
     async function loadPlaylists(){
       try{
-        const res = await fetch('playlist.json', { cache:'no-cache' });
-        const data = await res.json();
-        renderPlaylists(Array.isArray(data) ? data : []);
-      }catch(e){ console.error(e); }
+        const res=await fetch('playlist.json',{cache:'no-cache'});
+        const data=await res.json();
+        renderPlaylists(Array.isArray(data)?data:[]);
+      }catch(e){console.error(e);}
     }
-
     function renderPlaylists(list){
-      const grid = document.getElementById('grid');
-      grid.innerHTML = '';
-      list.forEach((pl, idx) => {
-        const cell = document.createElement('div');
-        cell.className = 'cell';
-
-        const card = document.createElement('a');
-        card.className = 'plate reveal';
-        card.href = pl.url; card.target = '_blank'; card.rel = 'noopener';
-
-        const stripe = document.createElement('span'); stripe.className = 'stripe';
-        const img = document.createElement('img'); img.className = 'cover'; img.src = pl.cover; img.alt = `${pl.title||''} cover`; img.loading = 'lazy';
-
-        card.append(stripe, img);
-        cell.append(card); grid.appendChild(cell);
+      const grid=document.getElementById('grid');
+      grid.innerHTML='';
+      list.forEach((pl)=>{
+        const cell=document.createElement('div');
+        cell.className='cell';
+        const card=document.createElement('a');
+        card.className='plate';
+        card.href=pl.url;card.target='_blank';card.rel='noopener';
+        const stripe=document.createElement('span');stripe.className='stripe';
+        const img=document.createElement('img');img.className='cover';img.src=pl.cover;img.alt=`${pl.title||''} cover`;img.loading='lazy';
+        card.append(stripe,img);
+        cell.append(card);grid.appendChild(cell);
       });
-      observeReveals();
     }
-
-    document.addEventListener('DOMContentLoaded', loadPlaylists);
+    document.addEventListener('DOMContentLoaded',loadPlaylists);
   </script>
 </body>
 </html>
