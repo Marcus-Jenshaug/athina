@@ -8,7 +8,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@300;400;600&family=Newsreader:ital,wght@0,300;1,300&display=swap" rel="stylesheet">
   <style>
     :root {
-      --paper:#F7F2E9;
+      /* ENDRET: basebakgrunn satt til ønsket farge */
+      --paper:#729092; /* <- hovedbakgrunn */
       --ink:#111;
       --muted:#3D3A36;
       --maxw:1120px;
@@ -25,6 +26,7 @@
     * { box-sizing:border-box; }
     body {
       margin:0;
+      /* Viktig: reell bakgrunn = eksakt #729092 */
       background:var(--paper);
       color:var(--ink);
       font-family:Inter, sans-serif;
@@ -33,32 +35,29 @@
       position:relative;
       overflow-x:hidden;
     }
-    /* Papirtekstur med subtil bevegelse */
+
+    /* Papirtekstur/vignett legges under tint og innhold, så den ikke lysner fargen */
     body::before {
       content:"";
-      position:fixed; inset:0; pointer-events:none; z-index:0;
+      position:fixed; inset:0; pointer-events:none; z-index:0; /* under glød og tint */
       background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="220" height="220"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2"/></filter><rect width="100%" height="100%" filter="url(%23n)" opacity="0.22"/></svg>');
-      mix-blend-mode:multiply; opacity:.18;
+      mix-blend-mode:multiply; opacity:.14; /* litt lavere så den ikke skifter lyshet */
       animation: grainShift 24s steps(2,end) infinite;
     }
     body::after{
-      content:""; position:fixed; inset:-10% -10%; pointer-events:none; z-index:0;
+      content:""; position:fixed; inset:-10% -10%; pointer-events:none; z-index:0; /* under glød og tint */
       background:
         radial-gradient(40% 35% at 20% 25%, rgba(0,0,0,.06), rgba(0,0,0,0) 60%),
         radial-gradient(45% 40% at 80% 70%, rgba(0,0,0,.05), rgba(0,0,0,0) 60%),
         radial-gradient(55% 50% at 50% 10%, rgba(0,0,0,.04), rgba(0,0,0,0) 65%);
-      opacity:.35; mix-blend-mode:multiply;
+      opacity:.28; mix-blend-mode:multiply;
       animation: vignetteDrift 80s linear infinite;
     }
     @keyframes grainShift { 0%,100%{transform:translate3d(0,0,0)} 50%{transform:translate3d(1px,-1px,0)} }
-    @keyframes vignetteDrift {
-      0%{transform:translate3d(0,0,0)}
-      50%{transform:translate3d(1.5%,-1.5%,0)}
-      100%{transform:translate3d(0,0,0)}
-    }
+    @keyframes vignetteDrift { 0%{transform:translate3d(0,0,0)} 50%{transform:translate3d(1.5%,-1.5%,0)} 100%{transform:translate3d(0,0,0)} }
 
-    /* bevegelig lysglimt i samme palett */
-    .glow{position:fixed;inset:0;z-index:0;pointer-events:none;mix-blend-mode:soft-light;opacity:.18}
+    /* Bevegelig lysglimt: legges OVER body-bakgrunn men UNDER semitransparent tint */
+    .glow{position:fixed;inset:0;z-index:1;pointer-events:none;mix-blend-mode:soft-light;opacity:.28}
     .glow::before{content:"";position:absolute;width:55vmax;height:55vmax;border-radius:50%;
       background:radial-gradient(closest-side, var(--acc-blue), transparent 60%),
                  radial-gradient(closest-side, var(--acc-red), transparent 65%),
@@ -68,7 +67,7 @@
       filter:blur(28px) saturate(.9);transform:translate3d(-20%, -20%, 0);
       animation: gleamOrbit 120s linear infinite;
     }
-    .glow.b{opacity:.14;mix-blend-mode:overlay}
+    .glow.b{opacity:.22;mix-blend-mode:overlay}
     .glow.b::before{width:45vmax;height:45vmax;animation: gleamOrbit2 140s linear infinite}
     @keyframes gleamOrbit {
       0%{transform:translate3d(-25%, -20%, 0) rotate(0deg)}
@@ -85,20 +84,17 @@
       100%{transform:translate3d(30%, 20%, 0) rotate(-360deg)}
     }
     @media (prefers-reduced-motion:reduce){.glow::before{animation:none}}
-    @keyframes grainShift { 0%,100%{transform:translate3d(0,0,0)} 50%{transform:translate3d(1px,-1px,0)} }
-    @keyframes vignetteDrift {
-      0%{transform:translate3d(0,0,0)}
-      50%{transform:translate3d(1.5%,-1.5%,0)}
-      100%{transform:translate3d(0,0,0)}
-    }
 
-    .container { max-width:var(--maxw); margin:0 auto; padding:48px 20px 24px; position:relative; z-index:1; }
+    /* NY: Semitransparent tint over glød som sikrer korrekt #729092-inntrykk, men slipper glødet gjennom */
+    .bg-tint{position:fixed; inset:0; z-index:2; pointer-events:none; background:rgba(114,144,146,0.94);} /* 94% opasitet */
+
+    .container { max-width:var(--maxw); margin:0 auto; padding:48px 20px 24px; position:relative; z-index:3; }
 
     header.brev { padding-top:56px; text-align:center; }
     .brev h1 { font-family:"Archivo Black"; font-size:clamp(2rem,3.2vw,2.6rem); margin:0 0 12px; }
     .brev p { font-family:"Newsreader", serif; font-style:italic; color:var(--muted); max-width:70ch; margin:0 auto; }
 
-    main { padding:16px 20px 72px; position:relative; z-index:1; }
+    main { padding:16px 20px 72px; position:relative; z-index:3; }
     .grid { display:grid; gap:var(--gap); grid-template-columns:repeat(3,minmax(0,1fr)); max-width:var(--maxw); margin:0 auto; }
 
     /* Kort med naturlig vind-bølge animasjon */
@@ -106,14 +102,8 @@
     .plate:hover { box-shadow:0 16px 32px rgba(0,0,0,.16); }
     .plate:nth-child(2n) { animation-delay:2.5s; }
     .plate:nth-child(3n) { animation-delay:5s; }
-    @keyframes wind {
-      0%   { transform:translateY(0) rotate(0deg); }
-      25%  { transform:translateY(-6px) rotate(-0.25deg); }
-      50%  { transform:translateY(3px) rotate(0.2deg); }
-      75%  { transform:translateY(-4px) rotate(-0.15deg); }
-      100% { transform:translateY(0) rotate(0deg); }
-    }
-    @media (prefers-reduced-motion: reduce){ .plate{ animation:none; } body::after{ animation:none; } body::before{ animation:none; } }
+    @keyframes wind { 0%{ transform:translateY(0) rotate(0deg);} 25%{ transform:translateY(-6px) rotate(-0.25deg);} 50%{ transform:translateY(3px) rotate(0.2deg);} 75%{ transform:translateY(-4px) rotate(-0.15deg);} 100%{ transform:translateY(0) rotate(0deg);} }
+    @media (prefers-reduced-motion: reduce){ .plate{ animation:none; } }
 
     /* Stripe med rolig, sømløs fargedrift */
     .stripe { position:absolute; top:0; left:0; right:0; height:6px; background:linear-gradient(90deg,var(--acc-blue),var(--acc-red),var(--acc-gold),var(--acc-plum),var(--acc-sky),var(--acc-blue)); background-size:500% 100%; animation: stripeFlow 120s linear infinite; }
@@ -121,15 +111,19 @@
 
     .cover { width:100%; aspect-ratio:1/1; object-fit:cover; display:block; }
 
-    footer { text-align:center; font-size:1rem; padding:0 20px 64px; position:relative; z-index:1; }
+    footer { text-align:center; font-size:1rem; padding:0 20px 64px; position:relative; z-index:3; }
     .footer-note { font-family:"Inter", sans-serif; font-size:0.95rem; color:var(--muted); margin-bottom:12px; }
     .quote { max-width:800px; margin:0 auto; font-family:"Newsreader", serif; font-style:italic; font-size:1.1rem; line-height:1.9; color:var(--muted); text-align:center; }
     .quote strong { font-family:"Archivo Black", sans-serif; font-style:normal; font-size:1.15rem; margin:0 4px; color:var(--ink); }
   </style>
 </head>
 <body>
+  <!-- Glød-lag (bak tint) -->
   <div class="glow a" aria-hidden="true"></div>
   <div class="glow b" aria-hidden="true"></div>
+  <!-- Semitransparent hovedbakgrunn som sikrer #729092, men slipper gløden igjennom -->
+  <div class="bg-tint" aria-hidden="true"></div>
+
   <header class="brev container" aria-label="Brev fra Marcus til Athina">
     <h1>Kjære Athina</h1>
     <p>Jeg har laget dette lille stedet for oss, et sted hvor musikken kan samle seg, kapittel for kapittel. Når du åpner listene, håper jeg du kjenner at tankene mine er hos deg.</p>
@@ -155,8 +149,7 @@
         const res=await fetch('playlist.json',{cache:'no-cache'});
         const data=await res.json();
         renderPlaylists(Array.isArray(data)?data:[]);
-      }catch(e){console.error(e);}
-    }
+      }catch(e){console.error(e);}    }
     function renderPlaylists(list){
       const grid=document.getElementById('grid');
       grid.innerHTML='';
