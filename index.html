@@ -57,18 +57,18 @@
     @keyframes vignetteDrift { 0%{transform:translate3d(0,0,0)} 50%{transform:translate3d(1.5%,-1.5%,0)} 100%{transform:translate3d(0,0,0)} }
 
     /* Bevegelig lysglimt: legges OVER body-bakgrunn men UNDER semitransparent tint */
-    .glow{position:fixed;inset:0;z-index:1;pointer-events:none;mix-blend-mode:soft-light;opacity:.28}
+    .glow{position:fixed;inset:0;z-index:1;pointer-events:none;mix-blend-mode:screen;opacity:.35}
     .glow::before{content:"";position:absolute;width:55vmax;height:55vmax;border-radius:50%;
       background:radial-gradient(closest-side, var(--acc-blue), transparent 60%),
                  radial-gradient(closest-side, var(--acc-red), transparent 65%),
                  radial-gradient(closest-side, var(--acc-gold), transparent 70%),
                  radial-gradient(closest-side, var(--acc-plum), transparent 75%),
                  radial-gradient(closest-side, var(--acc-sky), transparent 80%);
-      filter:blur(28px) saturate(.9);transform:translate3d(-20%, -20%, 0);
+      filter:blur(36px) saturate(.9);transform:translate3d(-20%, -20%, 0);
       animation: gleamOrbit 120s linear infinite;
     }
-    .glow.b{opacity:.22;mix-blend-mode:overlay}
-    .glow.b::before{width:45vmax;height:45vmax;animation: gleamOrbit2 140s linear infinite}
+    .glow.b{opacity:.30;mix-blend-mode:screen}
+    .glow.b::before{width:50vmax;height:50vmax;animation: gleamOrbit2 140s linear infinite}
     @keyframes gleamOrbit {
       0%{transform:translate3d(-25%, -20%, 0) rotate(0deg)}
       25%{transform:translate3d(35%, -10%, 0) rotate(90deg)}
@@ -85,16 +85,13 @@
     }
     @media (prefers-reduced-motion:reduce){.glow::before{animation:none}}
 
-    /* NY: Semitransparent tint over glød som sikrer korrekt #729092-inntrykk, men slipper glødet gjennom */
-    .bg-tint{position:fixed; inset:0; z-index:2; pointer-events:none; background:rgba(114,144,146,0.94);} /* 94% opasitet */
+    .container { max-width:var(--maxw); margin:0 auto; padding:48px 20px 24px; position:relative; z-index:2; }
 
-    .container { max-width:var(--maxw); margin:0 auto; padding:48px 20px 24px; position:relative; z-index:3; }
-
-    header.brev { padding-top:56px; text-align:center; }
+    header.brev { padding-top:56px; text-align:center; position: relative; z-index: 2; }
     .brev h1 { font-family:"Archivo Black"; font-size:clamp(2rem,3.2vw,2.6rem); margin:0 0 12px; }
     .brev p { font-family:"Newsreader", serif; font-style:italic; color:var(--muted); max-width:70ch; margin:0 auto; }
 
-    main { padding:16px 20px 72px; position:relative; z-index:3; }
+    main { padding:16px 20px 72px; position:relative; z-index:2; }
     .grid { display:grid; gap:var(--gap); grid-template-columns:repeat(3,minmax(0,1fr)); max-width:var(--maxw); margin:0 auto; }
 
     /* Kort med naturlig vind-bølge animasjon */
@@ -111,7 +108,7 @@
 
     .cover { width:100%; aspect-ratio:1/1; object-fit:cover; display:block; }
 
-    footer { text-align:center; font-size:1rem; padding:0 20px 64px; position:relative; z-index:3; }
+    footer { text-align:center; font-size:1rem; padding:0 20px 64px; position:relative; z-index:2; }
     .footer-note { font-family:"Inter", sans-serif; font-size:0.95rem; color:var(--muted); margin-bottom:12px; }
     .quote { max-width:800px; margin:0 auto; font-family:"Newsreader", serif; font-style:italic; font-size:1.1rem; line-height:1.9; color:var(--muted); text-align:center; }
     .quote strong { font-family:"Archivo Black", sans-serif; font-style:normal; font-size:1.15rem; margin:0 4px; color:var(--ink); }
@@ -121,8 +118,6 @@
   <!-- Glød-lag (bak tint) -->
   <div class="glow a" aria-hidden="true"></div>
   <div class="glow b" aria-hidden="true"></div>
-  <!-- Semitransparent hovedbakgrunn som sikrer #729092, men slipper gløden igjennom -->
-  <div class="bg-tint" aria-hidden="true"></div>
 
   <header class="brev container" aria-label="Brev fra Marcus til Athina">
     <h1>Kjære Athina</h1>
