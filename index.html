@@ -45,10 +45,12 @@
     main { padding:16px 20px 72px; position:relative; z-index:1; }
     .grid { display:grid; gap:var(--gap); grid-template-columns:repeat(3,1fr); max-width:var(--maxw); margin:0 auto; }
 
-    .plate { display:block; border-radius:var(--radius); overflow:hidden; background:rgba(255,255,255,.55); border:1px solid rgba(0,0,0,.08); box-shadow:var(--shadow); text-decoration:none; color:inherit; position:relative; transform:translateY(0); transition:transform .4s ease, box-shadow .4s ease; animation: floaty 6s ease-in-out infinite; }
-    .plate:nth-child(2n) { animation-delay:1.2s; }
-    .plate:nth-child(3n) { animation-delay:2.4s; }
-    @keyframes floaty { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-6px); } }
+    .plate { display:block; border-radius:var(--radius); overflow:hidden; background:rgba(255,255,255,.55); border:1px solid rgba(0,0,0,.08); box-shadow:var(--shadow); text-decoration:none; color:inherit; position:relative; transform:translateY(0) scale(1); transition:transform .6s ease, box-shadow .4s ease; animation: wavey 8s ease-in-out infinite; }
+    .plate:hover { transform:translateY(-4px) scale(1.02); box-shadow:0 16px 32px rgba(0,0,0,.16); }
+    .plate:nth-child(2n) { animation-delay:1.6s; }
+    .plate:nth-child(3n) { animation-delay:3.2s; }
+
+    @keyframes wavey { 0%,100% { transform:translateY(0) scale(1); } 25% { transform:translateY(-8px) scale(1.02); } 50% { transform:translateY(0) scale(1); } 75% { transform:translateY(6px) scale(0.99); } }
 
     .stripe { position:absolute; top:0; left:0; right:0; height:6px; background:linear-gradient(90deg,#0073C6,#D93C3C,#C9A66B,#5B4A58,#AEC6CF); background-size:600% 100%; animation: stripeFlow 30s linear infinite; }
     @keyframes stripeFlow { 0%{background-position:0% 50%;} 100%{background-position:600% 50%;} }
@@ -98,10 +100,10 @@
   </main>
 
   <footer>
-    <p class="footer-note">En liten hilsen fra meg, et sitat jeg satte pris på :)</p>
+    <p class="footer-note">En liten hilsen fra meg, et sitat jeg satte pris på:</p>
     <p class="quote">
       <strong>If we're dating</strong> I don't want to be your first priority. I shouldn't be. 
-      I want your first priority to be you – your ambitions, your life, and your future. 
+      I want your first priority to be you, your ambitions, your life, and your future. 
       <strong>Stay focused</strong>, I want the best for you. Don't let me be your distraction – 
       let me be your motivation, your support, your help to grow. 
       <strong>I'm not gonna let you give up on yourself.</strong> I got you if you got me.
