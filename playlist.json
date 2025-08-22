@@ -2,20 +2,20 @@
   {
     "title": "Chapter One",
     "subtitle": "Musikk for de stille timene der alt føles litt nærmere.",
-    "cover": "media/chapter-one.png",
+    "cover": "media/chapter-one.jpg",
     "url": "https://open.spotify.com/playlist/2p1N7hMKUbYvCYUnQqIDsP?si=31ad79c3bb5a43b1"
   },
   {
     "title": "Chapter Two",
     "subtitle": "Musikk til timene der verden åpner seg litt mer.",
-    "cover": "media/chapter-two.png",
+    "cover": "media/chapter-two.jpg",
     "url": "https://open.spotify.com/playlist/7GpwmP2xfYXJwLgihWdcIp?si=102a6f672e4d40a1" 
   },
 
   {
     "title": "Chapter Three",
     "subtitle": "Musikk for netter som aldri tar slutt.",
-    "cover": "media/chapter-three.png",
+    "cover": "media/chapter-three.jpg",
     "url": "https://open.spotify.com/playlist/20G67uCbbXjLKIjvP1Vwh9?si=5a3dcac2bd8242a9" 
   }
 ]
