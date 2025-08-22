@@ -2,7 +2,8 @@
 <html lang="no">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="transparent" />
   <title>Kapitler — Spillelister</title>
   <!-- Typografi (print-inspirert) -->
   <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@300;400;600&family=Newsreader:ital,wght@0,300;1,300&display=swap" rel="stylesheet">
@@ -25,10 +26,13 @@
       --acc-sky:#AEC6CF;
     }
     * { box-sizing:border-box; }
+    html {
+      background:var(--paper);
+    }
     body {
       margin:0;
       /* Viktig: reell bakgrunn = eksakt #729092 */
-      background:var(--paper);
+      background:transparent;
       color:var(--ink);
       font-family:Inter, sans-serif;
       line-height:1.65;
