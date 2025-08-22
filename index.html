@@ -15,6 +15,12 @@
       --radius:10px;
       --shadow:0 12px 28px rgba(0,0,0,.12);
       --gap:26px;
+      /* aksentpalett brukt i stripe og glimt */
+      --acc-blue:#0073C6;
+      --acc-red:#D93C3C;
+      --acc-gold:#C9A66B;
+      --acc-plum:#5B4A58;
+      --acc-sky:#AEC6CF;
     }
     * { box-sizing:border-box; }
     body {
@@ -51,6 +57,41 @@
       100%{transform:translate3d(0,0,0)}
     }
 
+    /* bevegelig lysglimt i samme palett */
+    .glow{position:fixed;inset:0;z-index:0;pointer-events:none;mix-blend-mode:soft-light;opacity:.18}
+    .glow::before{content:"";position:absolute;width:55vmax;height:55vmax;border-radius:50%;
+      background:radial-gradient(closest-side, var(--acc-blue), transparent 60%),
+                 radial-gradient(closest-side, var(--acc-red), transparent 65%),
+                 radial-gradient(closest-side, var(--acc-gold), transparent 70%),
+                 radial-gradient(closest-side, var(--acc-plum), transparent 75%),
+                 radial-gradient(closest-side, var(--acc-sky), transparent 80%);
+      filter:blur(28px) saturate(.9);transform:translate3d(-20%, -20%, 0);
+      animation: gleamOrbit 120s linear infinite;
+    }
+    .glow.b{opacity:.14;mix-blend-mode:overlay}
+    .glow.b::before{width:45vmax;height:45vmax;animation: gleamOrbit2 140s linear infinite}
+    @keyframes gleamOrbit {
+      0%{transform:translate3d(-25%, -20%, 0) rotate(0deg)}
+      25%{transform:translate3d(35%, -10%, 0) rotate(90deg)}
+      50%{transform:translate3d(20%, 30%, 0) rotate(180deg)}
+      75%{transform:translate3d(-30%, 15%, 0) rotate(270deg)}
+      100%{transform:translate3d(-25%, -20%, 0) rotate(360deg)}
+    }
+    @keyframes gleamOrbit2 {
+      0%{transform:translate3d(30%, 20%, 0) rotate(0deg)}
+      25%{transform:translate3d(-20%, 25%, 0) rotate(-90deg)}
+      50%{transform:translate3d(-30%, -15%, 0) rotate(-180deg)}
+      75%{transform:translate3d(25%, -25%, 0) rotate(-270deg)}
+      100%{transform:translate3d(30%, 20%, 0) rotate(-360deg)}
+    }
+    @media (prefers-reduced-motion:reduce){.glow::before{animation:none}}
+    @keyframes grainShift { 0%,100%{transform:translate3d(0,0,0)} 50%{transform:translate3d(1px,-1px,0)} }
+    @keyframes vignetteDrift {
+      0%{transform:translate3d(0,0,0)}
+      50%{transform:translate3d(1.5%,-1.5%,0)}
+      100%{transform:translate3d(0,0,0)}
+    }
+
     .container { max-width:var(--maxw); margin:0 auto; padding:48px 20px 24px; position:relative; z-index:1; }
 
     header.brev { padding-top:56px; text-align:center; }
@@ -75,7 +116,7 @@
     @media (prefers-reduced-motion: reduce){ .plate{ animation:none; } body::after{ animation:none; } body::before{ animation:none; } }
 
     /* Stripe med rolig, sømløs fargedrift */
-    .stripe { position:absolute; top:0; left:0; right:0; height:6px; background:linear-gradient(90deg,#0073C6,#D93C3C,#C9A66B,#5B4A58,#AEC6CF,#0073C6); background-size:500% 100%; animation: stripeFlow 120s linear infinite; }
+    .stripe { position:absolute; top:0; left:0; right:0; height:6px; background:linear-gradient(90deg,var(--acc-blue),var(--acc-red),var(--acc-gold),var(--acc-plum),var(--acc-sky),var(--acc-blue)); background-size:500% 100%; animation: stripeFlow 120s linear infinite; }
     @keyframes stripeFlow { 0%{background-position:0% 50%;} 100%{background-position:100% 50%;} }
 
     .cover { width:100%; aspect-ratio:1/1; object-fit:cover; display:block; }
@@ -87,6 +128,8 @@
   </style>
 </head>
 <body>
+  <div class="glow a" aria-hidden="true"></div>
+  <div class="glow b" aria-hidden="true"></div>
   <header class="brev container" aria-label="Brev fra Marcus til Athina">
     <h1>Kjære Athina</h1>
     <p>Jeg har laget dette lille stedet for oss, et sted hvor musikken kan samle seg, kapittel for kapittel. Når du åpner listene, håper jeg du kjenner at tankene mine er hos deg.</p>
