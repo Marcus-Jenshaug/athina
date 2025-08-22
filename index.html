@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Kapitler — Spillelister</title>
-  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@300;400;500;600&family=Newsreader:ital,wght@1,400;1,500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
       --paper:#F1E3CF;
@@ -89,13 +89,13 @@
       top:0; left:0; right:0;
       height:6px;
       background: linear-gradient(90deg, #0073C6, #D93C3C, #C9A66B, #5B4A58, #AEC6CF);
-      background-size: 300% 100%;
-      animation: stripeFlow 8s linear infinite;
+      background-size: 400% 100%;
+      animation: stripeFlow 20s linear infinite;
     }
 
     @keyframes stripeFlow {
       0% { background-position:0% 50%; }
-      100% { background-position:100% 50%; }
+      100% { background-position:400% 50%; }
     }
 
     .cover {
@@ -104,18 +104,6 @@
       object-fit:cover;
       display:block;
     }
-    .meta {
-      padding:14px 16px 16px;
-      background:linear-gradient(180deg, rgba(241,227,207,.6), rgba(241,227,207,.4));
-      border-top:1px solid rgba(0,0,0,.06);
-    }
-    .tittel {
-      margin:0 0 4px;
-      font-family:"Archivo Black";
-      text-transform:uppercase;
-      font-size:1.18rem;
-    }
-    .under { margin:0; color:var(--muted); font-size:.95rem; }
 
     footer {
       text-align:center;
@@ -171,19 +159,7 @@
         img.alt = `${pl.title} cover`;
         img.loading = 'lazy';
 
-        const meta = document.createElement('div');
-        meta.className = 'meta';
-
-        const h = document.createElement('h2');
-        h.className = 'tittel';
-        h.textContent = pl.title.replace(/^Kapittel\s*/i, '');
-
-        const s = document.createElement('p');
-        s.className = 'under';
-        s.textContent = pl.subtitle;
-
-        meta.append(h,s);
-        card.append(stripe,img,meta);
+        card.append(stripe,img);
         grid.appendChild(card);
       });
     }
