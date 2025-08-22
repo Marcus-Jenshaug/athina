@@ -59,47 +59,28 @@
     /* Ny, lettvekts glød */
     .glow-wrap { position: fixed; inset: 0; z-index: 1; pointer-events: none; }
     .glow-layer {
-      position: absolute; inset: -15% -15%;
-      /* 2–3 radiale graderinger, ingen filter */
-      background:
-        radial-gradient(35% 35% at 20% 25%, rgba(0,115,198,0.65), transparent 60%),
-        radial-gradient(40% 40% at 75% 70%, rgba(217,60,60,0.45), transparent 62%),
-        radial-gradient(30% 30% at 50% 15%, rgba(201,166,107,0.35), transparent 65%);
-      opacity: 0.65;
-      will-change: transform, opacity;
-      contain: paint;
-      transform: translate3d(0,0,0) scale(1);
-      animation: glowDrift 120s linear infinite;
-    }
-
-    /* Valgfri andre layer for dybde (kan tones ned på mobil) */
-    .glow-layer.b {
-      opacity: 0.55;
-      background:
-        radial-gradient(30% 30% at 30% 75%, rgba(91,74,88,0.4), transparent 60%),
-        radial-gradient(28% 28% at 80% 25%, rgba(174,198,207,0.3), transparent 62%);
-      animation: glowDriftSlow 140s linear infinite;
-    }
-
-    @keyframes glowDrift {
-      0%   { transform: translate3d(-2%, -1%, 0) scale(1.02); }
-      50%  { transform: translate3d( 2%,  1%, 0) scale(1.00); }
-      100% { transform: translate3d(-2%, -1%, 0) scale(1.02); }
-    }
-    @keyframes glowDriftSlow {
-      0%   { transform: translate3d( 2%,  1%, 0) scale(1.01); }
-      50%  { transform: translate3d(-2%, -1%, 0) scale(1.00); }
-      100% { transform: translate3d( 2%,  1%, 0) scale(1.01); }
+      position: absolute; 
+      inset: -20% -20%;
+      background: linear-gradient(135deg, 
+        var(--acc-blue), 
+        var(--acc-red), 
+        var(--acc-gold), 
+        var(--acc-plum), 
+        var(--acc-sky), 
+        var(--acc-blue));
+      background-size: 400% 400%;
+      opacity: 0.9;
+      will-change: background-position;
+      animation: stripeFlow 80s linear infinite;
     }
 
     /* Mobil og redusert bevegelse */
     @media (max-width: 768px), (hover: none), (pointer: coarse) {
-      .glow-layer { animation: none; opacity: 0.45; }
-      .glow-layer.b { display: none; }
+      .glow-layer { animation: none; opacity: 0.6; }
     }
 
     @media (prefers-reduced-motion: reduce) {
-      .glow-layer, .glow-layer.b { animation: none; }
+      .glow-layer { animation: none; }
     }
 
     .container { max-width:var(--maxw); margin:0 auto; padding:48px 20px 24px; position:relative; z-index:2; }
@@ -140,7 +121,6 @@
   <!-- Ny, lettvekts glød -->
   <div class="glow-wrap" aria-hidden="true">
     <div class="glow-layer"></div>
-    <div class="glow-layer b"></div>
   </div>
 
   <header class="brev container" aria-label="Brev fra Marcus til Athina">
