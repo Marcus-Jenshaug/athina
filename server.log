@@ -1,0 +1,6 @@
+127.0.0.1 - - [26/Aug/2025 00:20:21] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [26/Aug/2025 00:20:21] "GET /playlist.json HTTP/1.1" 200 -
+127.0.0.1 - - [26/Aug/2025 00:20:21] "GET /media/chapter-one.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [26/Aug/2025 00:20:21] "GET /media/chapter-three.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [26/Aug/2025 00:20:21] "GET /media/chapter-two.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [26/Aug/2025 00:20:21] "GET /media/chapter-four.jpg HTTP/1.1" 200 -
