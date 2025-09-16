@@ -8,7 +8,7 @@
   <meta name="theme-color" content="transparent" />
   <title>En gave til deg — Fra Marcus</title>
   <!-- Typografi (print-inspirert) -->
-  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@300;400;600&family=Newsreader:ital,wght@0,300;1,300&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@300;400;600&family=Newsreader:ital,wght@0,300;1,300&family=Raleway:wght@400;700&display=swap" rel="stylesheet">
   <style>
     :root {
       /* ENDRET: basebakgrunn satt til ønsket farge */
@@ -29,39 +29,39 @@
     }
     * { box-sizing:border-box; }
     html {
-      --grain-opacity: 0.04;
-      --vignette-strength: 0.1;
+      background-color: #5f6d7a; /* Fallback color */
+    }
 
-      background-color: var(--paper);
-      background-image:
-        /* Vignette: a simple, single radial gradient for a soft edge darkening */
-        radial-gradient(ellipse at center, transparent 65%, rgba(0, 0, 0, var(--vignette-strength))),
-        /* Grain: using an SVG with baked-in opacity */
-        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="220" height="220"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2"/></filter><rect width="100%" height="100%" filter="url(%23n)" opacity="0.04"/></svg>');
+    /* Breathing texture overlay */
+    html::before {
+      content: '';
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="220" height="220"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2"/></filter><rect width="100%" height="100%" filter="url(%23n)" opacity="0.04"/></svg>');
+      animation: breathing-texture 12s ease-in-out infinite;
+      z-index: -1;
+    }
 
-      background-attachment: fixed;
-      background-size: 100% 100%, auto;
+    @keyframes breathing-texture {
+      0% { opacity: 0.03; }
+      50% { opacity: 0.05; }
+      100% { opacity: 0.03; }
     }
 
     body {
       margin: 0;
-      background-color: transparent;
       color: var(--ink);
-      font-family: Inter, sans-serif;
+      font-family: "Inter", "Raleway", sans-serif; /* Added Raleway as fallback */
       line-height: 1.65;
       -webkit-font-smoothing: antialiased;
       position: relative;
       overflow-x: hidden;
 
-      /* Animated glow layer, blended softly over the html background */
-      background-image: linear-gradient(135deg,
-        var(--acc-blue), var(--acc-red), var(--acc-gold),
-        var(--acc-plum), var(--acc-sky), var(--acc-blue));
-      background-size: 400% 400%;
+      /* New vintage collage background */
+      background-image: linear-gradient(to bottom, #b38a58, #5f6d7a);
+      background-size: 100% 100vh;
+      background-repeat: no-repeat;
       background-attachment: fixed;
-      background-blend-mode: soft-light;
-      background-position: 50% 50%;
-      animation: stripeFlow 80s linear infinite;
     }
 
     /* Mobil og redusert bevegelse */
@@ -71,10 +71,48 @@
       }
     }
 
+    @media (max-width: 768px) {
+      .gift-wrapper {
+        padding: 2rem 0;
+      }
+    }
+
     @media (prefers-reduced-motion: reduce) {
-      body,
+      /* Disable all animations for reduced motion */
+      html::before,
+      .background-animations .element,
+      .drifting-particle,
+      .gift-box,
+      .gift-band,
       .plate {
-        animation: none;
+        animation: none !important;
+      }
+
+      /* Handle the open state without animation */
+      .gift-wrapper.opened .gift-box,
+      .gift-wrapper.opened .gift-band {
+        opacity: 0;
+        visibility: hidden;
+      }
+      .revealed-frame {
+        transition: none;
+      }
+      .gift-wrapper.opened .revealed-frame {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      /* Also disable the hover effect */
+      .gift-box:hover {
+        transform: none;
+        box-shadow: 0 0 1px 1px rgba(0,0,0,0.1), 0 0 3px 2px rgba(0,0,0,0.05);
+      }
+
+      body::after {
+        transition: none;
+      }
+      body.background-opened::after {
+        opacity: 1;
       }
     }
 
@@ -153,159 +191,223 @@
       font-style: italic;
     }
 
-    /* Styles for the gift box */
+    /* New styles for the collage design will go here */
     .gift-wrapper {
       display: grid;
       place-items: center;
+      position: relative;
       padding: 4rem 0;
       perspective: 1200px;
     }
-    .gift {
+    .gift-box {
       width: 280px;
-      height: 200px;
+      max-width: 90%;
+      height: 350px;
+      background-color: #5b5266; /* Lilla-brun */
       position: relative;
       cursor: pointer;
-      background-color: var(--acc-plum);
+      display: grid;
+      place-items: center;
+      border-radius: 3px;
+      box-shadow: 0 0 1px 1px rgba(0,0,0,0.1), 0 0 3px 2px rgba(0,0,0,0.05);
+      transition: transform 0.4s, box-shadow 0.4s;
+    }
+    .gift-box:hover {
+      transform: scale(1.02);
+      box-shadow: 0 0 5px 2px rgba(255,255,255,0.05), 0 10px 20px rgba(0,0,0,0.2);
+    }
+    .gift-band {
+      position: absolute;
+      width: 80px;
+      height: 100%;
+      background-color: #c9a66b; /* Matt gull */
       display: grid;
       place-items: center;
       text-align: center;
-      color: white;
-      transition: transform 0.6s, box-shadow 0.6s;
-    }
-    .gift:before, .gift:after {
-      content: '';
-      position: absolute;
-      background-color: var(--acc-gold);
-      z-index: 1;
-    }
-    .gift:before { /* Vertical ribbon */
-      width: 25px;
-      height: 100%;
-      left: calc(50% - 12.5px);
-    }
-    .gift:after { /* Horizontal ribbon */
-      width: 100%;
-      height: 25px;
-      top: calc(50% - 12.5px);
     }
     .gift-text {
       font-family: "Newsreader", serif;
       font-style: italic;
-      font-size: 1.2rem;
-      z-index: 2;
-      padding: 0 1rem;
+      font-size: 1.1rem;
+      color: #4a3f55; /* Deeper lilla-brun */
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
     }
 
-    /* Animation styles */
-    .pass-content {
+    /* Drifting particles */
+    .drifting-particle {
       position: absolute;
+      transform-origin: center;
+      animation: drift 15s ease-in-out infinite;
       opacity: 0;
-      transform: scale(0.8);
-      transition: opacity 0.5s 0.4s ease, transform 0.5s 0.4s ease;
-      pointer-events: none;
-      width: 100%;
-      max-width: 500px;
-      padding: 20px;
+    }
+    @keyframes drift {
+      0% { transform: translateY(0px) translateX(0px) rotate(0deg); opacity: 0.7; }
+      50% { transform: translateY(-30px) translateX(20px) rotate(180deg); opacity: 0.3; }
+      100% { transform: translateY(0px) translateX(0px) rotate(360deg); opacity: 0.7; }
+    }
+
+    /* --- Opening Animation --- */
+
+    /* Background transition */
+    body::after {
+      content: '';
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-image: linear-gradient(to bottom, #c7a270, #6a7f8f);
+      opacity: 0;
+      transition: opacity 1.5s 0.5s ease-in-out;
+      z-index: -2;
+    }
+    body.background-opened::after {
+      opacity: 1;
+    }
+
+    /* Gift unfolding animation */
+    @keyframes unfold {
+      0% { transform: rotateX(0) scale(1); }
+      100% { transform: rotateX(-160deg) scale(0.8) translateY(-200px); opacity: 0; }
+    }
+    @keyframes fall-away {
+      0% { transform: translateY(0) rotate(0); opacity: 1; }
+      100% { transform: translateY(300px) rotate(25deg); opacity: 0; }
+    }
+    .gift-wrapper.opened .gift-box {
+      animation: unfold 1.5s ease-in-out forwards;
+    }
+    .gift-wrapper.opened .gift-band {
+      animation: fall-away 1.2s ease-in forwards;
+    }
+
+    /* Particle burst animation */
+    @keyframes burst {
+      0% { transform: scale(1); opacity: 0.7; }
+      100% { transform: scale(3) translate(var(--burst-x), var(--burst-y)); opacity: 0; }
+    }
+    .gift-wrapper.opened .drifting-particle {
+      animation: burst 1s ease-out forwards;
+    }
+
+    /* --- Revealed Frame Styles --- */
+    .revealed-frame {
+      position: absolute;
+      width: 90%;
+      max-width: 450px;
+      background-color: #f5f1e8; /* Cream/beige */
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="220" height="220"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2"/></filter><rect width="100%" height="100%" filter="url(%23n)" opacity="0.02"/></svg>');
+      border: 1px solid rgba(0,0,0,0.1);
+      padding: 2.5rem;
       text-align: center;
-    }
-    .gift-wrapper.opened .gift {
-      transform: rotateY(-180deg) scale(0.2);
       opacity: 0;
+      transform: scale(0.9);
       pointer-events: none;
-      transition: transform 0.7s, opacity 0.6s, box-shadow 0.7s;
+      box-shadow:
+          -5px -5px 0px 0px rgba(91, 82, 102, 0.5),
+          5px 5px 0px 0px rgba(91, 82, 102, 0.5);
+      transition: opacity 0.6s 1.2s, transform 0.6s 1.2s;
     }
-    .gift-wrapper.opened .pass-content {
+    .gift-wrapper.opened .revealed-frame {
       opacity: 1;
       transform: scale(1);
       pointer-events: auto;
     }
-
-    /* Confetti styles */
-    .gift-wrapper {
-      position: relative; /* Needed for confetti positioning */
-    }
-    .confetti-particle {
-      position: absolute;
-      width: 10px;
-      height: 10px;
-      border-radius: 5px;
-      pointer-events: none;
-      opacity: 0;
-      animation: confetti-fall 2s ease-out forwards;
-    }
-    @keyframes confetti-fall {
-      0% {
-        transform: translateY(-20px) rotateZ(0deg) scale(1);
-        opacity: 1;
-      }
-      100% {
-        transform: translateY(250px) rotateZ(360deg) scale(0);
-        opacity: 0;
-      }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .gift-wrapper.opened .gift {
-        opacity: 0;
-      }
-      .gift-wrapper.opened .pass-content {
-        opacity: 1;
-      }
-      .confetti-particle {
-        animation: none;
-      }
-    }
-
-    /* Revealed content styles */
-    .festival-pass {
-      background: rgba(255, 255, 255, 0.85);
-      padding: 2rem;
-      border-top: 6px solid var(--acc-blue);
-    }
-    .logo-placeholder {
-      font-family: "Archivo Black", sans-serif;
-      color: var(--muted);
+    .frame-content > * {
       margin-bottom: 1rem;
-      border: 2px dashed var(--muted);
-      padding: 1rem;
+    }
+    .frame-intro, .personal-message {
+      font-family: "Inter", sans-serif;
+      color: #333;
+      font-size: 0.9rem;
+      line-height: 1.5;
     }
     .festival-title {
-      font-family: "Archivo Black", sans-serif;
-      font-size: clamp(1.8rem, 5vw, 2.4rem);
-      color: var(--acc-blue);
-      margin: 0 0 0.5rem;
-      line-height: 1.2;
+      font-family: "Raleway", sans-serif;
+      font-weight: 700;
+      font-size: 1.8rem;
+      color: #4a3f55;
     }
     .festival-details {
       font-family: "Inter", sans-serif;
-      font-size: 1.1rem;
-      color: var(--ink);
-      margin: 0.25rem 0;
-    }
-    .personal-message {
-      font-family: "Newsreader", serif;
-      font-style: italic;
-      font-size: 1.15rem;
-      color: var(--muted-text);
-      margin: 1.5rem 0;
+      color: #555;
+      font-size: 1rem;
     }
     .cta-button {
       display: inline-block;
-      margin-top: 1rem;
-      padding: 0.8rem 1.5rem;
-      background-color: var(--acc-blue);
+      padding: 12px 24px;
+      background-color: #5f6d7a; /* Matte blue */
       color: white;
+      border-radius: 50px;
       text-decoration: none;
-      font-weight: 600;
+      font-weight: 700;
       transition: background-color 0.3s, transform 0.3s;
+      margin-top: 1rem;
     }
     .cta-button:hover {
-      background-color: #005a9e;
-      transform: translateY(-2px);
+      background-color: #465A65;
+      transform: scale(1.05);
+    }
+
+    /* Floating background elements */
+    .background-animations {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .background-animations .element {
+      position: absolute;
+      opacity: 0;
+      animation: float-and-fade 20s linear infinite;
+      will-change: transform, opacity;
+      background-size: contain;
+      background-repeat: no-repeat;
+    }
+    @keyframes float-and-fade {
+      0% { opacity: 0; transform: translateY(0) rotate(0deg); }
+      10% { opacity: 0.6; }
+      90% { opacity: 0.2; }
+      100% { opacity: 0; transform: translateY(-20vh) rotate(360deg); }
+    }
+    .element.leaf1 {
+      width: 60px; height: 60px;
+      top: 15%; left: 5%;
+      animation-delay: 0s;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50,0 C20,20 20,80 50,100 C80,80 80,20 50,0 Z M50,0 C60,50 50,100 50,100' fill='none' stroke='rgba(255,255,255,0.15)' stroke-width='5'/%3E%3C/svg%3E");
+    }
+    .element.note1 {
+      width: 40px; height: 40px;
+      top: 80%; left: 90%;
+      animation-delay: 5s;
+      animation-duration: 25s;
+      background-image: url("data:image/svg+xml,%3Csvg fill='rgba(255,255,255,0.15)' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath d='M452.3,0.5L185.2,67.3c-7.2,1.8-12.6,8.6-12.6,16.2v308.4c-14-8.4-31.3-13.5-50.1-13.5c-46,0-83.5,30-83.5,66.8s37.4,66.8,83.5,66.8s83.5-30,83.5-66.8V196.7l233.7-58.4v153.5c-14-8.4-31.3-13.5-50.1-13.5c-46,0-83.5,30-83.5,66.8s37.4,66.8,83.5,66.8s83.5-30,83.5-66.8V22.5C473,6,462.9-2.1,452.3,0.5z'/%3E%3C/svg%3E");
+    }
+    .element.leaf2 {
+      width: 45px; height: 45px;
+      top: 50%; left: 95%;
+      animation-delay: 10s;
+      animation-duration: 30s;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50,0 C20,20 20,80 50,100 C80,80 80,20 50,0 Z M50,0 C60,50 50,100 50,100' fill='none' stroke='rgba(255,255,255,0.15)' stroke-width='5'/%3E%3C/svg%3E");
+      transform: rotate(45deg);
+    }
+    .element.note2 {
+      width: 30px; height: 30px;
+      top: 5%; left: 10%;
+      animation-delay: 15s;
+      animation-duration: 22s;
+      background-image: url("data:image/svg+xml,%3Csvg fill='rgba(255,255,255,0.15)' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath d='M452.3,0.5L185.2,67.3c-7.2,1.8-12.6,8.6-12.6,16.2v308.4c-14-8.4-31.3-13.5-50.1-13.5c-46,0-83.5,30-83.5,66.8s37.4,66.8,83.5,66.8s83.5-30,83.5-66.8V196.7l233.7-58.4v153.5c-14-8.4-31.3-13.5-50.1-13.5c-46,0-83.5,30-83.5,66.8s37.4,66.8,83.5,66.8s83.5-30,83.5-66.8V22.5C473,6,462.9-2.1,452.3,0.5z'/%3E%3C/svg%3E");
+      transform: rotate(-15deg);
     }
   </style>
 </head>
 <body>
+  <div class="background-animations">
+    <span class="element leaf1"></span>
+    <span class="element note1"></span>
+    <span class="element leaf2"></span>
+    <span class="element note2"></span>
+  </div>
   <header class="brev container" aria-label="En gave til Athina">
     <h1>En gave til deg, Athina</h1>
     <p>Her er en liten gave til deg – en opplevelse vi kan glede oss til sammen. Klikk på gaven for å åpne den.</p>
@@ -313,21 +415,20 @@
 
   <main class="container">
     <div class="gift-wrapper" id="giftWrapper">
-      <div id="gift" class="plate gift" role="button" tabindex="0" aria-label="En gave til deg. Klikk for å åpne.">
-        <span class="gift-text">En spesiell gave venter på deg</span>
+      <div class="gift-box" id="gift" role="button" tabindex="0" aria-label="En gave, klikk for å åpne">
+        <div class="gift-band">
+            <span class="gift-text">En spesiell gave venter på deg</span>
+        </div>
       </div>
-      <div class="pass-content" id="passContent" hidden>
-        <div class="plate festival-pass">
-          <div class="logo-placeholder">[LOGO HERE]</div>
-          <h2 class="festival-title">Slottsfjell 2026</h2>
-          <p class="festival-details">9.–10. juli 2026</p>
-          <p class="festival-details">Slottsfjelltårnet i Tønsberg</p>
-          <p class="personal-message">
-            <em>Kjære Athina, tenk at vi skal oppleve dette sammen! Gleder meg til å skape nye minner med deg.</em>
-          </p>
-          <a href="https://slottsfjell.no" target="_blank" rel="noopener" class="plate cta-button">
-            Utforsk Festivalen
-          </a>
+      <div class="revealed-frame" id="revealedContent" hidden>
+        <div class="frame-content">
+            <p class="frame-intro">Her er en liten gave til deg - en opplevelse vi kan glede oss til sammen.</p>
+            <img src="https://mnd-assets.mynewsdesk.com/image/upload/c_limit,dpr_auto,f_auto,q_auto:good,w_600/rtcpi1y9qk1o1t3bql2e8r" alt="Slottsfjell Logo" class="festival-logo" style="max-width: 120px; margin-bottom: 1rem;">
+            <h2 class="festival-title">Slottsfjell 2026</h2>
+            <p class="festival-details">9.-10. Juli 2026</p>
+            <p class="festival-details">Slottsfjellet i Tønsberg</p>
+            <p class="personal-message">Kjære Athina, tenk at vi skal oppleve dette sammen! Gleder meg til å skape nye minner med deg.</p>
+            <a href="https://slottsfjell.no" target="_blank" rel="noopener" class="cta-button">Utforsk Festivalen</a>
         </div>
       </div>
     </div>
@@ -335,41 +436,71 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      const giftWrapper = document.getElementById('giftWrapper');
+      // New JavaScript for the collage design will go here
       const gift = document.getElementById('gift');
-      const passContent = document.getElementById('passContent');
+      const giftWrapper = document.getElementById('giftWrapper');
 
-      const confettiColors = ['--acc-blue', '--acc-red', '--acc-gold', '--acc-plum', '--acc-sky'];
+      createDriftingParticles();
 
       function openGift() {
         if (giftWrapper.classList.contains('opened')) return;
-
         giftWrapper.classList.add('opened');
-        passContent.removeAttribute('hidden');
-
-        // Confetti burst
-        const motionOK = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        if (motionOK) {
-          for (let i = 0; i < 100; i++) {
-            const particle = document.createElement('div');
-            particle.className = 'confetti-particle';
-            const xPos = (Math.random() - 0.5) * 2 * 200;
-            const yPos = (Math.random() - 0.5) * 2 * 200;
-            particle.style.transform = `translate(${xPos}px, ${yPos}px) rotateZ(${Math.random() * 360}deg)`;
-            particle.style.backgroundColor = `var(${confettiColors[Math.floor(Math.random() * confettiColors.length)]})`;
-            particle.style.animationDelay = `${Math.random() * 0.3}s`;
-            giftWrapper.appendChild(particle);
-          }
-        }
+        document.body.classList.add('background-opened');
+        document.getElementById('revealedContent').removeAttribute('hidden');
       }
 
       gift.addEventListener('click', openGift);
-      gift.addEventListener('keydown', (event) => {
-        if (event.key === 'Enter' || event.key === ' ') {
-          event.preventDefault();
+      gift.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
           openGift();
         }
       });
+
+      function createDriftingParticles() {
+        if (!giftWrapper) return;
+        const particleCount = 20;
+        const colors = ['#b38a58', '#5f6d7a', '#c9a66b', '#6c5b7b', '#d4c9be'];
+
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement('span');
+            particle.className = 'drifting-particle';
+
+            const angle = Math.random() * 2 * Math.PI;
+            const radius = 180 + Math.random() * 120;
+            particle.style.left = `calc(50% + ${Math.cos(angle) * radius}px)`;
+            particle.style.top = `calc(50% + ${Math.sin(angle) * radius}px)`;
+
+            const size = 5 + Math.random() * 10;
+            const randomShape = Math.random();
+            if (randomShape > 0.66) {
+                particle.style.width = '0';
+                particle.style.height = '0';
+                particle.style.borderLeft = `${size/2}px solid transparent`;
+                particle.style.borderRight = `${size/2}px solid transparent`;
+                particle.style.borderBottom = `${size}px solid ${colors[i % colors.length]}`;
+            } else {
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.backgroundColor = colors[i % colors.length];
+                if (randomShape > 0.33) {
+                  particle.style.borderRadius = '50%';
+                } else {
+                  particle.style.borderRadius = '0 50% 0 50%';
+                }
+            }
+
+            particle.style.animationDelay = `${Math.random() * 15}s`;
+            particle.style.animationDuration = `${15 + Math.random() * 10}s`;
+
+            const burstX = (Math.cos(angle) * 250) + 'px';
+            const burstY = (Math.sin(angle) * 250) + 'px';
+            particle.style.setProperty('--burst-x', burstX);
+            particle.style.setProperty('--burst-y', burstY);
+
+            giftWrapper.appendChild(particle);
+        }
+      }
     });
   </script>
 </body>
