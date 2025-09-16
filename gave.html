@@ -2,375 +2,44 @@
 <html lang="no">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="theme-color" content="transparent" />
-  <title>En gave til deg — Fra Marcus</title>
-  <!-- Typografi (print-inspirert) -->
-  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@300;400;600&family=Newsreader:ital,wght@0,300;1,300&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      /* ENDRET: basebakgrunn satt til ønsket farge */
-      --paper:#729092; /* <- hovedbakgrunn */
-      --ink:#111;
-      --muted:#3D3A36;
-      --muted-text: #2A2825; /* Mørkere for bedre kontrast */
-      --maxw:1120px;
-      --radius:10px;
-      --shadow:0 12px 28px rgba(0,0,0,.12);
-      --gap:26px;
-      /* aksentpalett brukt i stripe og glimt */
-      --acc-blue:#0073C6;
-      --acc-red:#D93C3C;
-      --acc-gold:#C9A66B;
-      --acc-plum:#5B4A58;
-      --acc-sky:#AEC6CF;
-    }
-    * { box-sizing:border-box; }
-    html {
-      --grain-opacity: 0.04;
-      --vignette-strength: 0.1;
-
-      background-color: var(--paper);
-      background-image:
-        /* Vignette: a simple, single radial gradient for a soft edge darkening */
-        radial-gradient(ellipse at center, transparent 65%, rgba(0, 0, 0, var(--vignette-strength))),
-        /* Grain: using an SVG with baked-in opacity */
-        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="220" height="220"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2"/></filter><rect width="100%" height="100%" filter="url(%23n)" opacity="0.04"/></svg>');
-
-      background-attachment: fixed;
-      background-size: 100% 100%, auto;
-    }
-
-    body {
-      margin: 0;
-      background-color: transparent;
-      color: var(--ink);
-      font-family: Inter, sans-serif;
-      line-height: 1.65;
-      -webkit-font-smoothing: antialiased;
-      position: relative;
-      overflow-x: hidden;
-
-      /* Animated glow layer, blended softly over the html background */
-      background-image: linear-gradient(135deg,
-        var(--acc-blue), var(--acc-red), var(--acc-gold),
-        var(--acc-plum), var(--acc-sky), var(--acc-blue));
-      background-size: 400% 400%;
-      background-attachment: fixed;
-      background-blend-mode: soft-light;
-      background-position: 50% 50%;
-      animation: stripeFlow 80s linear infinite;
-    }
-
-    /* Mobil og redusert bevegelse */
-    @media (max-width: 768px), (hover: none), (pointer: coarse) {
-      body {
-        animation: none;
-      }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      body,
-      .plate {
-        animation: none;
-      }
-    }
-
-    .container {
-      max-width: var(--maxw);
-      margin: 0 auto;
-      padding: 48px 20px 24px;
-      position: relative;
-      z-index: 2;
-
-      /* Legg til polstring for safe-areas (notch, home indicator) */
-      padding-top: calc(48px + env(safe-area-inset-top, 0));
-      padding-right: calc(20px + env(safe-area-inset-right, 0));
-      padding-bottom: calc(24px + env(safe-area-inset-bottom, 0));
-      padding-left: calc(20px + env(safe-area-inset-left, 0));
-    }
-
-    header.brev { padding-top:56px; text-align:center; position: relative; z-index: 2; }
-    .brev h1 { font-family:"Archivo Black"; font-size:clamp(2rem,3.2vw,2.6rem); margin:0 0 12px; }
-    .brev p { font-family:"Newsreader", serif; font-style:italic; color:var(--muted-text); max-width:70ch; margin:0 auto; }
-
-    main {
-      padding: 16px calc(20px + env(safe-area-inset-right, 0)) calc(72px + env(safe-area-inset-bottom, 0)) calc(20px + env(safe-area-inset-left, 0));
-      position: relative;
-      z-index: 2;
-    }
-    .grid { display:grid; gap:var(--gap); grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); max-width:var(--maxw); margin:0 auto; }
-
-    /* Juster gap for mindre skjermer */
-    @media (max-width: 768px) {
-      :root {
-        --gap: 16px;
-      }
-    }
-
-    /* Kort med naturlig vind-bølge animasjon */
-    .plate { display:block; border-radius:var(--radius); overflow:hidden; background:rgba(255,255,255,.55); border:1px solid rgba(0,0,0,.08); box-shadow:var(--shadow); text-decoration:none; color:inherit; position:relative; transform:translateZ(0); transition:box-shadow .4s ease; will-change:transform; animation: wind 14s cubic-bezier(.45,.05,.35,.95) infinite; }
-    .plate:hover { box-shadow:0 16px 32px rgba(0,0,0,.16); }
-    .plate:focus-visible {
-      box-shadow: 0 10px 20px rgba(0,0,0,.14);
-      outline: 2px solid var(--acc-blue);
-      outline-offset: 4px;
-      border-radius: var(--radius); /* Ensure outline follows border radius */
-    }
-    .plate:nth-child(2n) { animation-delay:2.5s; }
-    .plate:nth-child(3n) { animation-delay:5s; }
-    @keyframes wind { 0%{ transform:translateY(0) rotate(0deg);} 25%{ transform:translateY(-6px) rotate(-0.25deg);} 50%{ transform:translateY(3px) rotate(0.2deg);} 75%{ transform:translateY(-4px) rotate(-0.15deg);} 100%{ transform:translateY(0) rotate(0deg);} }
-
-    /* Ytelsesforbedringer for rendering */
-    header.container, main, footer {
-      content-visibility: auto;
-    }
-
-    .cover { width:100%; aspect-ratio:1/1; object-fit:cover; display:block; }
-
-    footer {
-      text-align: center;
-      font-size: 1rem;
-      padding: 0 calc(20px + env(safe-area-inset-right, 0)) calc(64px + env(safe-area-inset-bottom, 0)) calc(20px + env(safe-area-inset-left, 0));
-      position: relative;
-      z-index: 2;
-    }
-    .footer-note { font-family:"Inter", sans-serif; font-size:0.95rem; color:var(--muted); margin-bottom:12px; }
-    .quote { max-width:800px; margin:0 auto; font-family:"Newsreader", serif; font-style:italic; font-size:1.1rem; line-height:1.9; color:var(--muted); text-align:center; }
-    .quote strong { font-family:"Archivo Black", sans-serif; font-style:normal; font-size:1.15rem; margin:0 4px; color:var(--ink); }
-
-    /* Stil for feil- og tomtilstand-meldinger */
-    .error-message, .empty-message {
-      color: var(--muted-text);
-      background: rgba(255,255,255,.5);
-      padding: 24px;
-      border-radius: var(--radius);
-      text-align: center;
-      grid-column: 1 / -1; /* Sørger for at meldingen spenner over hele gridet */
-      font-family: "Inter", sans-serif;
-      font-style: italic;
-    }
-
-    /* Styles for the gift box */
-    .gift-wrapper {
-      display: grid;
-      place-items: center;
-      padding: 4rem 0;
-      perspective: 1200px;
-    }
-    .gift {
-      width: 280px;
-      height: 200px;
-      position: relative;
-      cursor: pointer;
-      background-color: var(--acc-plum);
-      display: grid;
-      place-items: center;
-      text-align: center;
-      color: white;
-      transition: transform 0.6s, box-shadow 0.6s;
-    }
-    .gift:before, .gift:after {
-      content: '';
-      position: absolute;
-      background-color: var(--acc-gold);
-      z-index: 1;
-    }
-    .gift:before { /* Vertical ribbon */
-      width: 25px;
-      height: 100%;
-      left: calc(50% - 12.5px);
-    }
-    .gift:after { /* Horizontal ribbon */
-      width: 100%;
-      height: 25px;
-      top: calc(50% - 12.5px);
-    }
-    .gift-text {
-      font-family: "Newsreader", serif;
-      font-style: italic;
-      font-size: 1.2rem;
-      z-index: 2;
-      padding: 0 1rem;
-    }
-
-    /* Animation styles */
-    .pass-content {
-      position: absolute;
-      opacity: 0;
-      transform: scale(0.8);
-      transition: opacity 0.5s 0.4s ease, transform 0.5s 0.4s ease;
-      pointer-events: none;
-      width: 100%;
-      max-width: 500px;
-      padding: 20px;
-      text-align: center;
-    }
-    .gift-wrapper.opened .gift {
-      transform: rotateY(-180deg) scale(0.2);
-      opacity: 0;
-      pointer-events: none;
-      transition: transform 0.7s, opacity 0.6s, box-shadow 0.7s;
-    }
-    .gift-wrapper.opened .pass-content {
-      opacity: 1;
-      transform: scale(1);
-      pointer-events: auto;
-    }
-
-    /* Confetti styles */
-    .gift-wrapper {
-      position: relative; /* Needed for confetti positioning */
-    }
-    .confetti-particle {
-      position: absolute;
-      width: 10px;
-      height: 10px;
-      border-radius: 5px;
-      pointer-events: none;
-      opacity: 0;
-      animation: confetti-fall 2s ease-out forwards;
-    }
-    @keyframes confetti-fall {
-      0% {
-        transform: translateY(-20px) rotateZ(0deg) scale(1);
-        opacity: 1;
-      }
-      100% {
-        transform: translateY(250px) rotateZ(360deg) scale(0);
-        opacity: 0;
-      }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .gift-wrapper.opened .gift {
-        opacity: 0;
-      }
-      .gift-wrapper.opened .pass-content {
-        opacity: 1;
-      }
-      .confetti-particle {
-        animation: none;
-      }
-    }
-
-    /* Revealed content styles */
-    .festival-pass {
-      background: rgba(255, 255, 255, 0.85);
-      padding: 2rem;
-      border-top: 6px solid var(--acc-blue);
-    }
-    .logo-placeholder {
-      font-family: "Archivo Black", sans-serif;
-      color: var(--muted);
-      margin-bottom: 1rem;
-      border: 2px dashed var(--muted);
-      padding: 1rem;
-    }
-    .festival-title {
-      font-family: "Archivo Black", sans-serif;
-      font-size: clamp(1.8rem, 5vw, 2.4rem);
-      color: var(--acc-blue);
-      margin: 0 0 0.5rem;
-      line-height: 1.2;
-    }
-    .festival-details {
-      font-family: "Inter", sans-serif;
-      font-size: 1.1rem;
-      color: var(--ink);
-      margin: 0.25rem 0;
-    }
-    .personal-message {
-      font-family: "Newsreader", serif;
-      font-style: italic;
-      font-size: 1.15rem;
-      color: var(--muted-text);
-      margin: 1.5rem 0;
-    }
-    .cta-button {
-      display: inline-block;
-      margin-top: 1rem;
-      padding: 0.8rem 1.5rem;
-      background-color: var(--acc-blue);
-      color: white;
-      text-decoration: none;
-      font-weight: 600;
-      transition: background-color 0.3s, transform 0.3s;
-    }
-    .cta-button:hover {
-      background-color: #005a9e;
-      transform: translateY(-2px);
-    }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>En gave til deg, Athina</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;700&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header class="brev container" aria-label="En gave til Athina">
-    <h1>En gave til deg, Athina</h1>
-    <p>Her er en liten gave til deg – en opplevelse vi kan glede oss til sammen. Klikk på gaven for å åpne den.</p>
-  </header>
-
-  <main class="container">
-    <div class="gift-wrapper" id="giftWrapper">
-      <div id="gift" class="plate gift" role="button" tabindex="0" aria-label="En gave til deg. Klikk for å åpne.">
-        <span class="gift-text">En spesiell gave venter på deg</span>
-      </div>
-      <div class="pass-content" id="passContent" hidden>
-        <div class="plate festival-pass">
-          <div class="logo-placeholder">[LOGO HERE]</div>
-          <h2 class="festival-title">Slottsfjell 2026</h2>
-          <p class="festival-details">9.–10. juli 2026</p>
-          <p class="festival-details">Slottsfjelltårnet i Tønsberg</p>
-          <p class="personal-message">
-            <em>Kjære Athina, tenk at vi skal oppleve dette sammen! Gleder meg til å skape nye minner med deg.</em>
-          </p>
-          <a href="https://slottsfjell.no" target="_blank" rel="noopener" class="plate cta-button">
-            Utforsk Festivalen
-          </a>
+  <div class="perspective-container">
+    <div class="container" id="container">
+      <header>
+        <h1 class="main-title">En gave til deg, Athina</h1>
+      </header>
+      <main class="gift-scene" id="giftScene">
+        <div class="gift-box" id="giftBox" role="button" tabindex="0" aria-label="En spesiell gave venter på deg. Klikk for å åpne.">
+          <div class="gift-band"></div>
+          <p class="gift-message">En spesiell gave venter på deg</p>
         </div>
-      </div>
+
+        <div class="gift-content-frame" id="giftContent">
+          <div class="frame-inner">
+            <p class="frame-top-text">Her er en liten gave til deg - en opplevelse vi kan glede oss til sammen. Klikk på gaven for å dyppe den.</p>
+
+            <img src="assets/slottsfjell-logo.png" alt="Slottsfjell Logo" class="festival-logo">
+
+            <h2 class="festival-title">Slottsfjell 2026</h2>
+            <p class="festival-details">9.-10. Juli 2026</p>
+            <p class="festival-details">Slottsfjellet i Tønsberg</p>
+
+            <p class="frame-bottom-text">Kjære Athina, tenk at vi skal oppleve dette sammen! Gleder meg til å skape nye minner med deg.</p>
+
+            <a href="https://slottsfjell.no" class="festival-button" target="_blank" rel="noopener" aria-label="Utforsk nettsiden til Slottsfjell festivalen">Utforsk Festivalen</a>
+          </div>
+        </div>
+      </main>
     </div>
-  </main>
-
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const giftWrapper = document.getElementById('giftWrapper');
-      const gift = document.getElementById('gift');
-      const passContent = document.getElementById('passContent');
-
-      const confettiColors = ['--acc-blue', '--acc-red', '--acc-gold', '--acc-plum', '--acc-sky'];
-
-      function openGift() {
-        if (giftWrapper.classList.contains('opened')) return;
-
-        giftWrapper.classList.add('opened');
-        passContent.removeAttribute('hidden');
-
-        // Confetti burst
-        const motionOK = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        if (motionOK) {
-          for (let i = 0; i < 100; i++) {
-            const particle = document.createElement('div');
-            particle.className = 'confetti-particle';
-            const xPos = (Math.random() - 0.5) * 2 * 200;
-            const yPos = (Math.random() - 0.5) * 2 * 200;
-            particle.style.transform = `translate(${xPos}px, ${yPos}px) rotateZ(${Math.random() * 360}deg)`;
-            particle.style.backgroundColor = `var(${confettiColors[Math.floor(Math.random() * confettiColors.length)]})`;
-            particle.style.animationDelay = `${Math.random() * 0.3}s`;
-            giftWrapper.appendChild(particle);
-          }
-        }
-      }
-
-      gift.addEventListener('click', openGift);
-      gift.addEventListener('keydown', (event) => {
-        if (event.key === 'Enter' || event.key === ' ') {
-          event.preventDefault();
-          openGift();
-        }
-      });
-    });
-  </script>
+  </div>
+  <!-- Particles will be generated by JS to keep the HTML clean -->
+  <script src="script.js" defer></script>
 </body>
 </html>

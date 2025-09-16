@@ -1,0 +1,346 @@
+/* --- General Setup & Colors --- */
+:root {
+  --golden-brown: #a98a67;
+  --grey-blue: #6d7b8d;
+  --deep-purple-brown: #5b4a58;
+  --matte-gold: #c5a56b;
+  --dark-text: #3d3a36;
+  --light-beige: #f5f1e8;
+  --rust-red: #b45f49;
+  --dusty-blue: #8b9ea7;
+  --paper-texture-opacity: 0.05;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Raleway', sans-serif;
+  color: var(--dark-text);
+  background-color: var(--grey-blue); /* Fallback */
+  background-image: linear-gradient(to bottom, var(--golden-brown), var(--grey-blue));
+  min-height: 100vh;
+  overflow: hidden; /* Prevents scrollbars from appearing due to particles */
+  position: relative;
+}
+
+/* --- Breathing Paper Texture --- */
+body::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.7" numOctaves="2"/></filter><rect width="100%" height="100%" filter="url(%23n)" opacity="0.4"/></svg>');
+  opacity: var(--paper-texture-opacity);
+  animation: breathing 15s ease-in-out infinite;
+  z-index: 1; /* Above background, below content */
+  pointer-events: none;
+}
+
+@keyframes breathing {
+  0% { opacity: 0.04; }
+  50% { opacity: 0.06; }
+  100% { opacity: 0.04; }
+}
+
+/* --- Layout & Typography --- */
+.perspective-container {
+  perspective: 1000px;
+}
+
+.container {
+  position: relative;
+  z-index: 2; /* Above texture */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  min-height: 100vh;
+  padding: 2rem;
+  text-align: center;
+}
+
+.main-title {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  color: var(--dark-text);
+  margin-top: 2rem;
+  margin-bottom: 4rem;
+}
+
+/* --- Gift Box --- */
+.gift-scene {
+  display: grid;
+  place-items: center;
+}
+
+.gift-box {
+  position: relative;
+  width: 250px;
+  height: 350px;
+  background-color: var(--deep-purple-brown);
+  border: 1px solid rgba(0,0,0,0.1);
+  border-radius: 4px 2px 5px 3px; /* Subtle irregular paper edge */
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2), 0 0 0 10px rgba(255,255,255,0.03) inset;
+}
+
+.gift-box:hover {
+  transform: translateY(-10px) scale(1.02);
+  box-shadow: 0 20px 35px rgba(0,0,0,0.3), 0 0 0 10px rgba(255,255,255,0.03) inset;
+}
+
+.gift-band {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 70px;
+  height: 100%;
+  background-color: var(--matte-gold);
+  border-left: 1px solid rgba(0,0,0,0.1);
+  border-right: 1px solid rgba(0,0,0,0.1);
+}
+
+.gift-message {
+  position: relative;
+  z-index: 1;
+  color: var(--deep-purple-brown);
+  font-family: 'Raleway', sans-serif;
+  font-style: italic;
+  font-size: 1.1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 0 1rem;
+  pointer-events: none; /* So it doesn't interfere with the gift box click */
+}
+
+/* --- Floating Particles --- */
+.particle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  background: var(--color);
+  border-radius: var(--radius);
+  opacity: 0;
+  animation: float var(--duration) var(--delay) infinite ease-in-out;
+  will-change: transform, opacity;
+  width: var(--size);
+  height: var(--size);
+  clip-path: var(--shape);
+}
+
+@keyframes float {
+  0% {
+    transform: translateX(var(--x-start)) translateY(var(--y-start)) rotate(0deg);
+    opacity: 0;
+  }
+  15%, 85% {
+    opacity: var(--opacity-max);
+  }
+  100% {
+    transform: translateX(var(--x-end)) translateY(var(--y-end)) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+/* --- Opening Animations --- */
+
+/* 1. Background Shift */
+body {
+  --opened-golden-brown: #c4a98a; /* Lighter */
+  --opened-grey-blue: #8392a4;   /* Lighter, more blue */
+  /* This transition won't work on gradients directly. We'll handle it differently. */
+  /* A pseudo-element fade is a good technique. */
+}
+
+body::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background-image: linear-gradient(to bottom, var(--opened-golden-brown), var(--opened-grey-blue));
+  opacity: 0;
+  transition: opacity 2s ease-in-out;
+  z-index: 0; /* Below main content, above main background */
+  pointer-events: none;
+}
+
+body.is-opened::after {
+  opacity: 1;
+}
+
+/* 2. Gift Box Unfolding */
+@keyframes unfold-box {
+  0% {
+    transform: rotateX(0deg) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: rotateX(70deg) scale(0.9) translateY(-200px) translateZ(-100px);
+    opacity: 0;
+  }
+}
+
+body.is-opened .gift-box {
+  animation: unfold-box 1.5s ease-in-out forwards;
+  animation-delay: 0.1s;
+  cursor: default;
+}
+
+/* 3. Ribbon Falling */
+@keyframes unravel-ribbon {
+  0% {
+    transform: translateY(0) scaleY(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(200px) scaleY(0.5);
+    opacity: 0;
+  }
+}
+
+body.is-opened .gift-band,
+body.is-opened .gift-message {
+  animation: unravel-ribbon 0.8s ease-in forwards;
+}
+
+
+/* 4. Particle Burst */
+@keyframes particle-burst {
+  0% {
+    transform: translate(var(--x-start-burst), var(--y-start-burst)) scale(1);
+    opacity: var(--opacity-max);
+  }
+  100% {
+    transform: translate(
+      calc(var(--x-start-burst) + var(--x-vector-burst)),
+      calc(var(--y-start-burst) + var(--y-vector-burst))
+    ) scale(0);
+    opacity: 0;
+  }
+}
+
+body.is-opened .particle {
+  /* Override the floating animation with the burst */
+  animation: particle-burst 1.2s ease-out forwards;
+  animation-delay: 0.1s; /* Stagger the burst slightly */
+}
+
+/* --- Revealed Content --- */
+.gift-content-frame {
+  position: absolute;
+  width: 100%;
+  max-width: 550px;
+  background-color: var(--light-beige);
+  border-radius: 6px 4px 8px 5px;
+  padding: 2rem 2.5rem;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+  border: 1px solid rgba(0,0,0,0.08);
+
+  /* Hide by default using display: none */
+  display: none;
+
+  /* Add noise texture */
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="150" height="150"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="1"/></filter><rect width="100%" height="100%" filter="url(%23n)" opacity="0.2"/></svg>');
+}
+
+.frame-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+body.is-opened .gift-content-frame {
+  display: block; /* Show when opened */
+}
+
+.festival-logo {
+  width: 100px;
+  height: auto;
+  margin: 0.5rem 0;
+  filter: sepia(0.2) saturate(0.8) contrast(0.9); /* Vintage feel */
+}
+
+.festival-title {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: clamp(2rem, 5vw, 3rem);
+  color: #2A2825; /* Restored dark color */
+  line-height: 1.1;
+  margin-top: 0.5rem;
+}
+
+.festival-details {
+  font-family: 'Raleway', sans-serif;
+  font-size: 1.1rem;
+  margin-top: -0.5rem;
+  color: var(--dark-text);
+  font-weight: 500;
+}
+
+.frame-top-text, .frame-bottom-text {
+  font-family: 'Raleway', sans-serif;
+  font-style: italic;
+  font-size: 1rem;
+  max-width: 45ch;
+  line-height: 1.6;
+  color: var(--dark-text);
+}
+
+.frame-bottom-text {
+  margin-top: 1rem;
+}
+
+.festival-button {
+  display: inline-block;
+  background-color: var(--dusty-blue);
+  color: var(--light-beige);
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  text-decoration: none;
+  padding: 0.8rem 1.8rem;
+  border-radius: 50px;
+  margin-top: 1.5rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+}
+
+.festival-button:hover {
+  background-color: #7c8f99; /* Darker dusty blue */
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+}
+
+/* --- Subtle Background Elements --- */
+.bg-element {
+  position: absolute;
+  z-index: 1; /* Just above the background, below content */
+  width: var(--size);
+  height: var(--size);
+  background-image: var(--svg);
+  background-size: contain;
+  background-repeat: no-repeat;
+  opacity: 0;
+  animation: subtle-appear var(--duration) var(--delay) infinite ease-in-out;
+  will-change: opacity, transform;
+}
+
+@keyframes subtle-appear {
+  0%, 100% {
+    opacity: 0;
+    transform: translateY(0) scale(1) rotate(var(--r-start));
+  }
+  50% {
+    opacity: 0.08;
+    transform: translateY(-15px) scale(1.05) rotate(var(--r-end));
+  }
+}
