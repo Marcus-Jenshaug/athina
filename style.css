@@ -54,6 +54,47 @@ body {
   animation: stripeFlow 120s linear infinite;
 }
 
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="220" height="220"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.75" numOctaves="2"/></filter><rect width="100%" height="100%" filter="url(%23n)" opacity="0.55"/></svg>');
+  opacity: 0.06;
+  animation: paperDrift 18s ease-in-out infinite;
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image:
+    radial-gradient(circle at 22% 18%, rgba(255, 255, 255, 0.22), transparent 58%),
+    radial-gradient(circle at 82% 22%, rgba(255, 255, 255, 0.16), transparent 62%),
+    linear-gradient(135deg, rgba(0, 115, 198, 0.08), rgba(201, 166, 107, 0.08), rgba(91, 74, 88, 0.08));
+  opacity: 0;
+  transition: opacity 1600ms ease;
+}
+
+body.gift-open::after {
+  opacity: 0.35;
+}
+
+@keyframes paperDrift {
+  0%,
+  100% {
+    opacity: 0.05;
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    opacity: 0.08;
+    transform: translate3d(0, -12px, 0);
+  }
+}
+
 @keyframes stripeFlow {
   0% {
     background-position: 0% 50%;
@@ -83,13 +124,25 @@ body {
   .gift-envelope,
   .envelope-flap,
   .festival-pass,
-  .confetti-piece {
+  .confetti-piece,
+  .particle,
+  .bg-element {
     animation: none !important;
     transition-duration: 0ms !important;
   }
 
   .confetti-host {
     display: none;
+  }
+
+  .particle,
+  .bg-element {
+    display: none;
+  }
+
+  body::before,
+  body::after {
+    animation: none;
   }
 
   body.gift-open .gift-box {
@@ -422,6 +475,86 @@ body.gift-open .festival-pass {
 .plate.action-button[aria-disabled="true"] {
   cursor: not-allowed;
   opacity: 0.7;
+}
+
+.particle {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: var(--size, 12px);
+  height: var(--size, 12px);
+  background: var(--color, rgba(255, 255, 255, 0.45));
+  clip-path: var(--shape, circle(50%));
+  opacity: 0;
+  pointer-events: none;
+  z-index: 1;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.18));
+  transform: translate3d(var(--x-start, 0px), var(--y-start, 0px), 0) rotate(0deg);
+  animation: float var(--duration, 24s) ease-in-out var(--delay, 0s) infinite;
+  mix-blend-mode: screen;
+}
+
+.particle.burst {
+  animation: particleBurst 1.2s ease-out forwards;
+}
+
+@keyframes float {
+  0% {
+    opacity: 0;
+    transform: translate3d(var(--x-start, 0px), var(--y-start, 0px), 0) rotate(0deg);
+  }
+  15%,
+  85% {
+    opacity: var(--opacity-max, 0.35);
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(var(--x-end, 0px), var(--y-end, 0px), 0) rotate(var(--rotation, 360deg));
+  }
+}
+
+@keyframes particleBurst {
+  0% {
+    opacity: var(--opacity-max, 0.35);
+    transform: translate3d(var(--burst-origin-x, 0px), var(--burst-origin-y, 0px), 0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(
+        calc(var(--burst-origin-x, 0px) + var(--burst-offset-x, 0px)),
+        calc(var(--burst-origin-y, 0px) + var(--burst-offset-y, 0px)),
+        0
+      )
+      scale(0.4);
+  }
+}
+
+.bg-element {
+  position: fixed;
+  top: var(--top, 0px);
+  left: var(--left, 0px);
+  width: var(--size, 120px);
+  height: var(--size, 120px);
+  background-image: var(--svg);
+  background-size: contain;
+  background-repeat: no-repeat;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 1;
+  transform: translate3d(0, 0, 0) rotate(var(--r-start, 0deg));
+  animation: backgroundGlide var(--duration, 30s) ease-in-out var(--delay, 0s) infinite;
+}
+
+@keyframes backgroundGlide {
+  0%,
+  100% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0) rotate(var(--r-start, 0deg));
+  }
+  50% {
+    opacity: var(--opacity-max, 0.1);
+    transform: translate3d(var(--drift-x, 0px), var(--drift-y, 0px), 0) rotate(var(--r-end, 0deg));
+  }
 }
 
 .confetti-host {
