@@ -23,5 +23,11 @@
     "subtitle": "Musikk for timene som aldri slipper taket.",
     "cover": "media/chapter-four.jpg",
     "url": "https://open.spotify.com/playlist/2HJmQo8RcBrNPhfd19GPjr?si=c5628689311849d5" 
+  },
+  {
+    "title": "En overraskelse...",
+    "subtitle": "Klikk for å åpne",
+    "cover": "media/chapter-one.jpg",
+    "url": "gave.html"
   }
 ]

@@ -6,7 +6,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="theme-color" content="transparent" />
-  <title>Kapitler — Spillelister</title>
+  <title>En gave til deg — Fra Marcus</title>
   <!-- Typografi (print-inspirert) -->
   <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@300;400;600&family=Newsreader:ital,wght@0,300;1,300&display=swap" rel="stylesheet">
   <style>
@@ -152,72 +152,225 @@
       font-family: "Inter", sans-serif;
       font-style: italic;
     }
+
+    /* Styles for the gift box */
+    .gift-wrapper {
+      display: grid;
+      place-items: center;
+      padding: 4rem 0;
+      perspective: 1200px;
+    }
+    .gift {
+      width: 280px;
+      height: 200px;
+      position: relative;
+      cursor: pointer;
+      background-color: var(--acc-plum);
+      display: grid;
+      place-items: center;
+      text-align: center;
+      color: white;
+      transition: transform 0.6s, box-shadow 0.6s;
+    }
+    .gift:before, .gift:after {
+      content: '';
+      position: absolute;
+      background-color: var(--acc-gold);
+      z-index: 1;
+    }
+    .gift:before { /* Vertical ribbon */
+      width: 25px;
+      height: 100%;
+      left: calc(50% - 12.5px);
+    }
+    .gift:after { /* Horizontal ribbon */
+      width: 100%;
+      height: 25px;
+      top: calc(50% - 12.5px);
+    }
+    .gift-text {
+      font-family: "Newsreader", serif;
+      font-style: italic;
+      font-size: 1.2rem;
+      z-index: 2;
+      padding: 0 1rem;
+    }
+
+    /* Animation styles */
+    .pass-content {
+      position: absolute;
+      opacity: 0;
+      transform: scale(0.8);
+      transition: opacity 0.5s 0.4s ease, transform 0.5s 0.4s ease;
+      pointer-events: none;
+      width: 100%;
+      max-width: 500px;
+      padding: 20px;
+      text-align: center;
+    }
+    .gift-wrapper.opened .gift {
+      transform: rotateY(-180deg) scale(0.2);
+      opacity: 0;
+      pointer-events: none;
+      transition: transform 0.7s, opacity 0.6s, box-shadow 0.7s;
+    }
+    .gift-wrapper.opened .pass-content {
+      opacity: 1;
+      transform: scale(1);
+      pointer-events: auto;
+    }
+
+    /* Confetti styles */
+    .gift-wrapper {
+      position: relative; /* Needed for confetti positioning */
+    }
+    .confetti-particle {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      border-radius: 5px;
+      pointer-events: none;
+      opacity: 0;
+      animation: confetti-fall 2s ease-out forwards;
+    }
+    @keyframes confetti-fall {
+      0% {
+        transform: translateY(-20px) rotateZ(0deg) scale(1);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(250px) rotateZ(360deg) scale(0);
+        opacity: 0;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .gift-wrapper.opened .gift {
+        opacity: 0;
+      }
+      .gift-wrapper.opened .pass-content {
+        opacity: 1;
+      }
+      .confetti-particle {
+        animation: none;
+      }
+    }
+
+    /* Revealed content styles */
+    .festival-pass {
+      background: rgba(255, 255, 255, 0.85);
+      padding: 2rem;
+      border-top: 6px solid var(--acc-blue);
+    }
+    .logo-placeholder {
+      font-family: "Archivo Black", sans-serif;
+      color: var(--muted);
+      margin-bottom: 1rem;
+      border: 2px dashed var(--muted);
+      padding: 1rem;
+    }
+    .festival-title {
+      font-family: "Archivo Black", sans-serif;
+      font-size: clamp(1.8rem, 5vw, 2.4rem);
+      color: var(--acc-blue);
+      margin: 0 0 0.5rem;
+      line-height: 1.2;
+    }
+    .festival-details {
+      font-family: "Inter", sans-serif;
+      font-size: 1.1rem;
+      color: var(--ink);
+      margin: 0.25rem 0;
+    }
+    .personal-message {
+      font-family: "Newsreader", serif;
+      font-style: italic;
+      font-size: 1.15rem;
+      color: var(--muted-text);
+      margin: 1.5rem 0;
+    }
+    .cta-button {
+      display: inline-block;
+      margin-top: 1rem;
+      padding: 0.8rem 1.5rem;
+      background-color: var(--acc-blue);
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+      transition: background-color 0.3s, transform 0.3s;
+    }
+    .cta-button:hover {
+      background-color: #005a9e;
+      transform: translateY(-2px);
+    }
   </style>
 </head>
 <body>
-  <header class="brev container" aria-label="Brev fra Marcus til Athina">
-    <h1>Kjære Athina</h1>
-    <p>Jeg har laget dette lille stedet for oss, et sted hvor musikken kan samle seg, kapittel for kapittel. Når du åpner listene, håper jeg du kjenner at tankene mine er hos deg.</p>
+  <header class="brev container" aria-label="En gave til Athina">
+    <h1>En gave til deg, Athina</h1>
+    <p>Her er en liten gave til deg – en opplevelse vi kan glede oss til sammen. Klikk på gaven for å åpne den.</p>
   </header>
 
-  <main>
-    <section class="grid" id="grid" aria-label="Spillelister"></section>
+  <main class="container">
+    <div class="gift-wrapper" id="giftWrapper">
+      <div id="gift" class="plate gift" role="button" tabindex="0" aria-label="En gave til deg. Klikk for å åpne.">
+        <span class="gift-text">En spesiell gave venter på deg</span>
+      </div>
+      <div class="pass-content" id="passContent" hidden>
+        <div class="plate festival-pass">
+          <div class="logo-placeholder">[LOGO HERE]</div>
+          <h2 class="festival-title">Slottsfjell 2026</h2>
+          <p class="festival-details">9.–10. juli 2026</p>
+          <p class="festival-details">Slottsfjelltårnet i Tønsberg</p>
+          <p class="personal-message">
+            <em>Kjære Athina, tenk at vi skal oppleve dette sammen! Gleder meg til å skape nye minner med deg.</em>
+          </p>
+          <a href="https://slottsfjell.no" target="_blank" rel="noopener" class="plate cta-button">
+            Utforsk Festivalen
+          </a>
+        </div>
+      </div>
+    </div>
   </main>
 
-  <footer>
-    <p class="footer-note">En liten hilsen fra meg, et sitat jeg satte pris på.</p>
-    <p class="quote">
-      <strong>If we're dating</strong>, I don't want to be your first priority. I shouldn't be. 
-      I want your first priority to be you, your ambitions, your life, and your future. 
-      <strong>Stay focused</strong>, I want the best for you. I want to be your motivation, your support, your help to grow. 
-      <strong>I'm not gonna let you give up on yourself.</strong> I got you if you got me.
-    </p>
-  </footer>
-
   <script>
-    async function loadPlaylists() {
-      const grid = document.getElementById('grid');
-      try {
-        const res = await fetch('playlist.json', { cache: 'no-cache' });
-        if (!res.ok) {
-          throw new Error(`Nettverksrespons var ikke ok, status: ${res.status}`);
-        }
-        const data = await res.json();
-        renderPlaylists(Array.isArray(data) ? data : []);
-      } catch (e) {
-        console.error('Feil ved lasting av spillelister:', e);
-        grid.innerHTML = `<p class="error-message">Kunne ikke laste spillelistene. Sjekk nettverksforbindelsen og prøv igjen.</p>`;
-      }
-    }
+    document.addEventListener('DOMContentLoaded', () => {
+      const giftWrapper = document.getElementById('giftWrapper');
+      const gift = document.getElementById('gift');
+      const passContent = document.getElementById('passContent');
 
-    function renderPlaylists(list) {
-      const grid = document.getElementById('grid');
-      grid.innerHTML = ''; // Tøm gridet
-      if (!list || list.length === 0) {
-        grid.innerHTML = `<p class="empty-message">Fant ingen spillelister.</p>`;
-        return;
-      }
-      list.forEach((pl) => {
-        const card = document.createElement('a');
-        card.className = 'plate';
-        card.href = pl.url;
-        // Open external links in a new tab, internal links in the same tab.
-        if (pl.url.startsWith('http')) {
-          card.target = '_blank';
-          card.rel = 'noopener';
+      const confettiColors = ['--acc-blue', '--acc-red', '--acc-gold', '--acc-plum', '--acc-sky'];
+
+      function openGift() {
+        if (giftWrapper.classList.contains('opened')) return;
+
+        giftWrapper.classList.add('opened');
+        passContent.removeAttribute('hidden');
+
+        // Confetti burst
+        const motionOK = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (motionOK) {
+          for (let i = 0; i < 100; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'confetti-particle';
+            const xPos = (Math.random() - 0.5) * 2 * 200;
+            const yPos = (Math.random() - 0.5) * 2 * 200;
+            particle.style.transform = `translate(${xPos}px, ${yPos}px) rotateZ(${Math.random() * 360}deg)`;
+            particle.style.backgroundColor = `var(${confettiColors[Math.floor(Math.random() * confettiColors.length)]})`;
+            particle.style.animationDelay = `${Math.random() * 0.3}s`;
+            giftWrapper.appendChild(particle);
+          }
         }
-        card.setAttribute('aria-label', `${pl.title}: ${pl.subtitle}`);
-        const img = document.createElement('img');
-        img.className = 'cover';
-        img.src = pl.cover;
-        img.alt = '';
-        img.loading = 'lazy';
-        img.decoding = 'async';
-        card.append(img);
-        grid.appendChild(card);
+      }
+
+      gift.addEventListener('click', openGift);
+      gift.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          openGift();
+        }
       });
-    }
-    document.addEventListener('DOMContentLoaded',loadPlaylists);
+    });
   </script>
 </body>
 </html>
